@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #EAEFEF;
+  color: #2C2F3B;
+  font-size: 16px;
+}
+
+@theme{
+  --color-retro:#D26C31;
+  --color-white:#EAEFEF;
+  --color-pastel-olive:#B2CD9C;
+  --color-dark:#2C2F3B;
+}
+
+@layer components{
+  .btn-fill{
+    @apply py-2 px-5 rounded-md bg-retro hover:bg-amber-600 border-retro border text-xl font-semibold my-5 mx-2 cursor-pointer;
+  }
+
+  .btn-outline{
+    @apply py-2 px-5 rounded-md border-retro border text-xl font-semibold my-5 mx-2 cursor-pointer;
+  }
+
+  .active-btn{
+    @apply font-black text-retro
+  }
+}
+
+
