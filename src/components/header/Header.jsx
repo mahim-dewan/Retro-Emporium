@@ -6,40 +6,66 @@ import Link from "next/link";
 import { TiThMenu } from "react-icons/ti";
 import Menubar from "./Menubar";
 import Slidebar from "./Slidebar";
+import SearchBar from "./SearchBar";
+import { Badge } from "../ui/badge";
+import { GiShoppingCart } from "react-icons/gi";
 
 const Header = () => {
   const [openSlidebar, setOpenSlidebar] = useState(false);
 
   return (
-    <header className="border-b border-dark w-full h-16 flex justify-between items-center pr-5">
-      {/* logo */}
-      <Link href={"/"}>
-        <Image alt="logo" src={logo} width={150} />
-      </Link>
+    <header className="sticky top-0 z-40 border-b  bg-white border-dark min-w-full">
+      <div className=" flex justify-between items-center pr-5">
+        {/* Left: Logo + Search (md+) */}
+        <div className="flex items-center justify-around md:flex-1">
+          {/* logo */}
+          <Link href={"/"}>
+            <Image alt="logo" src={logo} width={150} />
+          </Link>
 
-      {/* Humburger  */}
-      <div className="md:hidden">
-        <TiThMenu
-          onClick={() => setOpenSlidebar(!openSlidebar)}
-          className="text-retro text-3xl cursor-pointer"
-        />
+          {/* Search bar  */}
+          <div className=" hidden md:block w-full">
+            <SearchBar />
+          </div>
+        </div>
+
+        {/* Right: Cart, Menu, Menubar */}
+        <div className="flex items-center">
+          {/* Shopping Cart  */}
+          <div className="relative mx-4">
+            <GiShoppingCart className="text-3xl text-retro cursor-pointer m-2" />
+            <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums bg-pastel-olive text-retro absolute bottom-7 right-0">
+              8
+            </Badge>
+          </div>
+
+          {/* Hamburger (mobile only) */}
+          <div className="md:hidden">
+            <TiThMenu
+              onClick={() => setOpenSlidebar(!openSlidebar)}
+              className="text-retro text-3xl cursor-pointer"
+            />
+          </div>
+
+          {/* Menubar (desktop only) */}
+          <div className="hidden md:block w-4/5 ">
+            <Menubar />
+          </div>
+        </div>
       </div>
 
-      {/* Menubar */}
-      <div className="hidden md:block">
-        <Menubar />
-      </div>
-
-      {/* Slidebar */}
+      {/* Sidebar (mobile only) */}
       <div
         className={`min-h-full md:hidden z-50 bg-white border-l border-retro fixed top-0 w-1/2 right-0 transition-all duration-300 ease-in-out ${
           !openSlidebar ? "translate-x-96" : "translate-x-0"
         } `}
       >
-        <Slidebar
-          openSlidebar={openSlidebar}
-          setOpenSlidebar={setOpenSlidebar}
-        />
+        <Slidebar setOpenSlidebar={setOpenSlidebar} />
+      </div>
+
+      {/* Search bar (mobile only) */}
+      <div className="md:hidden w-4/5 mx-auto">
+        <SearchBar />
       </div>
     </header>
   );

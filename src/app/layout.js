@@ -6,6 +6,7 @@ import AppContextProvider from "@/context/AppContext";
 import LoginForm from "@/components/auth/LoginForm";
 import { ToastContainer } from "react-toastify";
 import RegisterForm from "@/components/auth/RegisterForm";
+import Footer from "@/components/rootPage/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +31,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <AppContextProvider>
           <SessionProviderWrapper>
-            <Header />
             <LoginForm
               className={
                 "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
@@ -45,8 +45,9 @@ export default function RootLayout({ children }) {
                 "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
               }
             />
-
-            {children}
+            <Header />
+            <main className="max-w-[1500px] mx-auto">{children}</main>
+            <Footer />
             <ToastContainer autoClose={2000} />
           </SessionProviderWrapper>
         </AppContextProvider>

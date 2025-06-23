@@ -52,7 +52,7 @@ export default function LoginForm({ className, ...props }) {
 
   // JSX Start
   return (
-    <div className="w-full h-screen bg-white/50 absolute top-0 z-50">
+    <div className="w-full h-screen bg-white/50 fixed top-0 z-50">
       <div
         className={cn(
           "flex flex-col gap-2 w-[350px] 2xl:w-[600px] mx-auto my-5 bg-pastel-olive rounded-xl relative",

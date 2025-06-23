@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { useAppContext } from "@/context/AppContext";
 
-const Slidebar = ({ openSlidebar, setOpenSlidebar }) => {
+const Slidebar = ({ setOpenSlidebar }) => {
   const pathname = usePathname();
   const { openLoginForm, setOpenLoginForm } = useAppContext();
   const { openRegisterForm, setOpenRegisterForm } = useAppContext();
@@ -51,17 +51,20 @@ const Slidebar = ({ openSlidebar, setOpenSlidebar }) => {
 
       {/* Login and Register Button  */}
       <div className="flex flex-col items-start">
-        <Button className="btn-outline" handler={() => {
-          setOpenSlidebar(false)
-          setOpenLoginForm(true)
-        }}>
+        <Button
+          className="btn-outline"
+          handler={() => {
+            setOpenSlidebar(false);
+            setOpenLoginForm(true);
+          }}
+        >
           Login
         </Button>
         <Button
           className="btn-fill text-white"
           handler={() => {
-            setOpenSlidebar(false)
-            setOpenRegisterForm(true)
+            setOpenSlidebar(false);
+            setOpenRegisterForm(true);
           }}
         >
           Resister

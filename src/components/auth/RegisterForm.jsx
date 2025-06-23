@@ -84,7 +84,7 @@ const RegisterForm = ({ className, ...props }) => {
 
   // JSX Start
   return (
-    <div className="w-full h-[110%] bg-white/50 absolute top-0 z-50">
+    <div className="w-full h-[110%] bg-white/50 fixed -top-10 z-50">
       <div className="py-5">
         <div
           className={cn(

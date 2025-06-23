@@ -1,11 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+main {
+  overflow-x: hidden;
+}
+
 :root{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #EAEFEF;
   color: #2C2F3B;
   font-size: 16px;
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 @theme{
@@ -26,6 +33,13 @@
 
   .active-btn{
     @apply font-black text-retro
+  }
+  .title{
+    @apply text-2xl font-bold text-center text-retro
+  }
+
+  .box-shadow{
+    @apply m-4 p-2 shadow-md shadow-dark rounded-md hidden md:block cursor-pointer
   }
 }
 
