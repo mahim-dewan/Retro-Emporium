@@ -3,12 +3,10 @@ import React from "react";
 import Link from "next/link";
 import Button from "../utils/Button";
 import { FaPlus } from "react-icons/fa";
+import { getAllCategory } from "@/utils/api";
 
 const CategoryFeature = async () => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_API}/api/categories/getAllCategory`
-  );
-  const categories = await res.json();
+  const categories = await getAllCategory();
 
   return (
     <div>

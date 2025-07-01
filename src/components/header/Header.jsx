@@ -9,12 +9,14 @@ import Slidebar from "./Slidebar";
 import SearchBar from "./SearchBar";
 import { Badge } from "../ui/badge";
 import { GiShoppingCart } from "react-icons/gi";
+import { IoIosArrowDown } from "react-icons/io";
+import CategorySlidebar from "./CategorySlidebar";
 
 const Header = () => {
   const [openSlidebar, setOpenSlidebar] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b  bg-white border-dark min-w-full">
+    <header className="sticky md:top-0 -top-16 z-40 border-b  bg-white border-gray-300 min-w-full">
       <div className=" flex justify-between items-center pr-5">
         {/* Left: Logo + Search (md+) */}
         <div className="flex items-center justify-around md:flex-1">
@@ -23,7 +25,7 @@ const Header = () => {
             <Image alt="logo" src={logo} width={150} />
           </Link>
 
-          {/* Search bar  */}
+          {/* Search bar (desktop only) */}
           <div className=" hidden md:block w-full">
             <SearchBar />
           </div>
@@ -31,13 +33,18 @@ const Header = () => {
 
         {/* Right: Cart, Menu, Menubar */}
         <div className="flex items-center">
+          {/* Category Menu Slider (Mobile Only) */}
+          <div className=" md:hidden">
+            <CategorySlidebar />
+          </div>
+
           {/* Shopping Cart  */}
-          <div className="relative mx-4">
+          <Link href={"/cart"} className="relative mx-4">
             <GiShoppingCart className="text-3xl text-retro cursor-pointer m-2" />
             <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums bg-pastel-olive text-retro absolute bottom-7 right-0">
               8
             </Badge>
-          </div>
+          </Link>
 
           {/* Hamburger (mobile only) */}
           <div className="md:hidden">

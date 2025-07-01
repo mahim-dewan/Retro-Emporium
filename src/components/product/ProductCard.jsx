@@ -6,7 +6,7 @@ import { TiShoppingCart } from "react-icons/ti";
 const ProductCard = ({ product }) => {
   return (
     <div className="w-[170px] sm:w-[190px] bg-pastel-olive h-[280px] mx-auto my-2 p-2 rounded-lg text-dark relative">
-      <Link href={`products/${product._id}`} className="hover:underline">
+      <Link href={`/${product._id}`} className="hover:underline">
         <img
           src={product?.image}
           className="w-full h-[150px] rounded"

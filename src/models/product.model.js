@@ -4,8 +4,11 @@ const { default: mongoose, model } = require("mongoose");
 const productSchema = new mongoose.Schema({
   title: String,
   description: String,
-  price: Number,
+  category:String,
+  regularPrice: Number,
+  discountPrice:Number,
   image: String,
+  sku:String,
   author: mongoose.Schema.ObjectId,
 });
 

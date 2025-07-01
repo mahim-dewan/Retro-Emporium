@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { Suspense } from "react";
 import paymentMethods from "../../public/paymentMethods.png";
+import CategoryMenuList from "@/components/product/CategoryMenuList";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -13,6 +14,11 @@ export default async function Home() {
 
   return (
     <div>
+      {/* Category menu  */}
+      <div className="hidden md:block">
+        <CategoryMenuList />
+      </div>
+
       {/* Hero area  */}
       <HeroSection />
 

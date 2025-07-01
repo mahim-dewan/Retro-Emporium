@@ -23,7 +23,7 @@ const HeroSection = () => {
     <div className="flex flex-col lg:flex-row justify-around gap-2">
       <Carousel
         plugins={[plugin.current]}
-        className="w-full lg:w-6/8 h-[300px] lg:h-[400px]"
+        className="w-full lg:w-6/8 h-[200px] md-h-[300px] lg:h-[400px]"
         onMouseEnter={() => plugin.current.stop()}
         onMouseLeave={() => plugin.current.play()}
         opts={{ loop: true }}
@@ -36,9 +36,9 @@ const HeroSection = () => {
                 <CardContent className="p-0">
                   <Image
                     alt="hero"
-                    className="w-full h-[300px] lg:h-[400px] "
+                    className="w-full h-[200px] md:h-[300px] lg:h-[400px] "
                     src={hero1}
-                    width={500}
+                    width={2000}
                   />
                 </CardContent>
               </Card>
@@ -50,9 +50,9 @@ const HeroSection = () => {
                 <CardContent className="p-0">
                   <Image
                     alt="hero"
-                    className="w-full h-[300px] lg:h-[400px]"
+                    className="w-full h-[200px] md:h-[300px] lg:h-[400px]"
                     src={hero2}
-                    width={500}
+                    width={2000}
                   />
                 </CardContent>
               </Card>
@@ -64,8 +64,9 @@ const HeroSection = () => {
                 <CardContent className="p-0">
                   <Image
                     alt="hero"
-                    className="w-full h-[300px] lg:h-[400px]"
+                    className="w-full h-[200px] md:h-[300px] lg:h-[400px]"
                     src={hero3}
+                    width={2000}
                   />
                 </CardContent>
               </Card>
@@ -77,16 +78,18 @@ const HeroSection = () => {
         {/* <CarouselPrevious />
         <CarouselNext /> */}
       </Carousel>
-      <div className="flex flex-row lg:flex-col items-start justify-between p-1 gap-[10px] lg:w-2/8">
+      <div className="flex flex-row lg:flex-col items-start justify-between p-1 gap-[10px] w-full lg:w-2/8">
         <Image
           alt="discount"
           src={discount}
-          className="w-full sm:w-1/2 lg:w-full h-[200px] lg:h-[210px]"
+          className="w-1/2 lg:w-full h-[200px] lg:h-[210px]"
+          width={1000}
         />
         <Image
           alt="discount"
           src={superSale}
-          className="w-f24 sm:w-1/2 lg:w-full h-[200px]  lg:h-[180px]"
+          className="w-1/2 lg:w-full h-[200px]  lg:h-[180px]"
+          width={1000}
         />
       </div>
     </div>
