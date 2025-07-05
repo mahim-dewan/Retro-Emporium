@@ -23,7 +23,16 @@ export async function POST(req) {
 
     // send response
     return NextResponse.json(
-      { message: "User created successfully", data },
+      {
+        message: "User created successfully",
+        data: {
+          firstname: data.firstname,
+          lastname: data.lastname,
+          email: data.email,
+          role: data.role,
+          isVerified: data.isVerified,
+        },
+      },
       { status: 201 }
     );
   } catch (err) {

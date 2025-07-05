@@ -16,15 +16,16 @@ import gmail from "../../../public/gmail.png";
 import facebook from "../../../public/facebook.png";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
+import { resendOTP } from "@/utils/api";
 
 export default function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  // Form open and close mode context
   const {
     openLoginForm,
     setOpenLoginForm,
@@ -32,22 +33,50 @@ export default function LoginForm({ className, ...props }) {
     setOpenRegisterForm,
   } = useAppContext();
 
+  // submit for login
   const loginHandler = async () => {
     const result = await signIn("credentials", {
       redirect: false,
       email,
       password,
     });
-    console.log(result);
-    if (result.error) return toast.error(result.error);
+
+    if (!result.ok) {
+      // check user email is verified
+      if (result.error === "Please Verify your email.") {
+        return toast.error((t) => (
+          <span className="flex">
+            {result.error}
+            <button
+              className="text-blue-600 underline cursor-pointer"
+              onClick={() => {
+                sessionStorage.setItem("registerEmail", email);
+                router.push("/verify");
+                setOpenLoginForm(false);
+                // toast.dismiss(t.id)
+                resendOTP(email);
+              }}
+            >
+              Verify
+            </button>
+          </span>
+        ));
+      }
+      toast.error(result?.error);
+      return;
+    }
+
     setEmail("");
     setPassword("");
+
+    // Login form close and redirect to home
+    setOpenLoginForm(false);
     toast.success("Login successful", {
       onClose: () => router.push("/"),
     });
-    setOpenLoginForm(false);
   };
 
+  // if login form stay close
   if (!openLoginForm) return null;
 
   // JSX Start
@@ -172,7 +201,6 @@ export default function LoginForm({ className, ...props }) {
           </div>
         </Card>
       </div>
-      {/* <ToastContainer autoClose={2000} /> */}
     </div>
   );
 }

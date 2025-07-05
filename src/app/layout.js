@@ -46,9 +46,12 @@ export default function RootLayout({ children }) {
               }
             />
             <Header />
-            <main className="max-w-[1500px] mx-auto">{children}</main>
+            <main className="max-w-[1500px] mx-auto">
+              {children}
+
+              <ToastContainer autoClose={2000} position="top-right" />
+            </main>
             <Footer />
-            <ToastContainer autoClose={2000} />
           </SessionProviderWrapper>
         </AppContextProvider>
       </body>

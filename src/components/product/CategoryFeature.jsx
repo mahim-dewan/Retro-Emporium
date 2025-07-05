@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import { getAllCategory } from "@/utils/api";
 
 const CategoryFeature = async () => {
-  const categories = await getAllCategory();
+  const { categories } = await getAllCategory();
 
   return (
     <div>
@@ -17,7 +17,7 @@ const CategoryFeature = async () => {
         </p>
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-9 m-5 place-items-center gap-5  items-stretch">
-        {categories?.categories?.map((category) => (
+        {categories?.map((category) => (
           <Link
             href={`/${encodeURIComponent(category?.name)}`}
             key={category._id}

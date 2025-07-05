@@ -1,5 +1,6 @@
 const { default: mongoose, model } = require("mongoose");
 import bcrypt from "bcryptjs";
+import OTP from "./otp.model";
 
 // User Schema defined
 const userSchema = new mongoose.Schema(
@@ -32,6 +33,14 @@ const userSchema = new mongoose.Schema(
 // Pre Hook
 userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
+});
+
+// Post Hook
+userSchema.post("save", async function () {
+  const email = this.email;
+  const otp = new OTP({ email });
+  // OTP create
+  await otp.save();
 });
 
 // User model defined

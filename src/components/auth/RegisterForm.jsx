@@ -14,8 +14,9 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import logo from "../../../public/Retro-logo.png";
 import { IoClose } from "react-icons/io5";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
 
 const RegisterForm = ({ className, ...props }) => {
   const [newUser, setNewUser] = useState({
@@ -25,12 +26,15 @@ const RegisterForm = ({ className, ...props }) => {
     password: "",
     confirmPass: "",
   });
+  // Form Open and Close mode
   const {
     openRegisterForm,
     setOpenRegisterForm,
     openLoginForm,
     setOpenLoginForm,
   } = useAppContext();
+  // Next Router for redirect
+  const router = useRouter();
 
   // onChange handler
   const onChangeHandler = (e) => {
@@ -42,12 +46,13 @@ const RegisterForm = ({ className, ...props }) => {
 
   // submit handler
   const submitHandler = async (e) => {
-    console.log(newUser);
     e.preventDefault();
 
     try {
+      // Is matched password and confirm password field
       if (newUser.password !== newUser.confirmPass)
         return toast.warning("Password doesn't matched");
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API}api/auth/register`,
         {
@@ -59,8 +64,11 @@ const RegisterForm = ({ className, ...props }) => {
         }
       );
       const data = await res.json();
-      console.log(data);
+
       if (!res.ok) return toast.error(data?.message);
+
+      // set email for verify page
+      sessionStorage.setItem("registerEmail", data.data.email);
 
       setNewUser({
         firstname: "",
@@ -70,16 +78,16 @@ const RegisterForm = ({ className, ...props }) => {
         confirmPass: "",
       });
 
-      // redirect to login page
+      // redirect to verify page
       toast.success(data?.message);
       setOpenRegisterForm(false);
-      setOpenLoginForm(true);
+      router.push("/verify");
     } catch (err) {
       toast(err?.message);
-      console.log(err?.message);
     }
   };
 
+  // if registration form stay close
   if (!openRegisterForm) return null;
 
   // JSX Start
@@ -215,7 +223,6 @@ const RegisterForm = ({ className, ...props }) => {
               <a href="#">Privacy Policy</a>.
             </div>
           </Card>
-          {/* <ToastContainer autoClose={2000} /> */}
         </div>
       </div>
     </div>
