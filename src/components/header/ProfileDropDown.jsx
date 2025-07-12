@@ -1,0 +1,88 @@
+"use client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Image from "next/image";
+import Button from "../utils/Button";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+
+export function ProfileDropDown() {
+  return (
+    <div className="md:mx-5 md:my-2">
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger>
+          <div className="w-8 h-8 md:w-10 md:h-10  p-0 rounded-full overflow-hidden mt-1 border border-retro cursor-pointer">
+            <Image
+              src={
+                "http://img.bbystatic.com/BestBuy_US/images/products/4390/43900_sa.jpg"
+              }
+              alt="Profile"
+              className="w-full h-full "
+              width={44}
+              height={44}
+            />
+          </div>
+        </DropdownMenuTrigger>
+        {/* Dropdown Content  */}
+        <DropdownMenuContent
+          sideOffset={10}
+          align="end"
+          className={
+            "bg-white z-50 w-[200px] min-h-96 relative border-pastel-olive"
+          }
+        >
+          <DropdownMenuLabel className={"text-lg font-bold"}>
+            My Account
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            asChild
+            className={
+              "cursor-pointer  hover:rounded-lg text-md font-semibold hover:shadow-sm shadow-dark"
+            }
+          >
+            <Link href={"/profile"}>Profile</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className={
+              "cursor-pointer  hover:rounded-lg text-md font-semibold hover:shadow-sm shadow-dark"
+            }
+          >
+            <Link href={"/team"}>Team</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className={
+              "cursor-pointer  hover:rounded-lg text-md font-semibold hover:shadow-sm shadow-dark"
+            }
+          >
+            <Link href={"/setting"}>Setting</Link>
+          </DropdownMenuItem>
+
+          {/* Log Out button  */}
+          <DropdownMenuItem
+            className={
+              " rounded-none m-0 absolute bottom-0 left-0 border-pastel-olive border-t w-full"
+            }
+          >
+            <Button
+              handler={() => signOut({ redirect: false })}
+              className={
+                "cursor-pointer text-md text-center font-semibold hover:shadow-sm shadow-dark w-full p-2 rounded-lg"
+              }
+            >
+              Sign Out
+            </Button>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}

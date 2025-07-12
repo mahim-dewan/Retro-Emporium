@@ -20,7 +20,9 @@ export default async function Home() {
       </div>
 
       {/* Hero area  */}
-      <HeroSection />
+      <div>
+        <HeroSection />
+      </div>
 
       {/* Category Features  */}
       <CategoryFeature />

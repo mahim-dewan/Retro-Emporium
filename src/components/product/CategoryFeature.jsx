@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import { getAllCategory } from "@/utils/api";
 
 const CategoryFeature = async () => {
-  const { categories } = await getAllCategory();
+  const  categories  = await getAllCategory();
 
   return (
     <div>
@@ -21,7 +21,7 @@ const CategoryFeature = async () => {
           <Link
             href={`/${encodeURIComponent(category?.name)}`}
             key={category._id}
-            className="w-26 md:w-32 min-h-fit border border-retro hover:text-white hover:bg-retro flex flex-col items-center justify-center rounded-lg text-center break-words"
+            className="w-26 md:w-32 min-h-fit border border-retro hover:text-white hover:bg-retro active:bg-retro flex flex-col items-center justify-center rounded-lg text-center break-words"
           >
             <Image
               src={category?.image}
@@ -33,7 +33,7 @@ const CategoryFeature = async () => {
             <h2> {category?.name}</h2>
           </Link>
         ))}
-        <Button className="w-26 md:w-32 min-h-fit border border-pastel-olive hover:text-dark hover:bg-pastel-olive flex flex-col items-center justify-center rounded-lg text-center break-words cursor-pointer py-2">
+        <Button className="w-26 md:w-32 min-h-fit border border-pastel-olive hover:text-dark hover:bg-pastel-olive active:text-dark active:bg-pastel-olive flex flex-col items-center justify-center rounded-lg text-center break-words cursor-pointer py-2">
           <FaPlus />
           <h2> Add Category</h2>
         </Button>

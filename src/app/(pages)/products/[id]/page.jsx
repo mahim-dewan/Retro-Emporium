@@ -1,10 +1,8 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import Button from "../utils/Button";
 import { GiShoppingCart } from "react-icons/gi";
 import { FaTruckArrowRight } from "react-icons/fa6";
-import DeliverySlide from "./DeliverySlide";
 import {
   FaMapMarkerAlt,
   FaTruck,
@@ -13,14 +11,16 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import { MdOutlineAddIcCall, MdOutlineGppBad } from "react-icons/md";
-import ProductTabDescription from "./ProductTabDescription";
-import RelatedProducts from "./RelatedProducts";
 import { getProductByID } from "@/utils/api";
-import Quantity from "./Quantity";
-import Bkash from "../../../public/Bkash.jpg";
-import Nagad from "../../../public/nagad.jpg";
-import Mastercard from "../../../public/mastercard.jpg";
-import Visa from "../../../public/visa.jpg";
+import Bkash from "../../../../../public/Bkash.jpg";
+import Nagad from "../../../../../public/nagad.jpg";
+import Mastercard from "../../../../../public/mastercard.jpg";
+import Visa from "../../../../../public/visa.jpg";
+import Quantity from "@/components/product/Quantity";
+import Button from "@/components/utils/Button";
+import DeliverySlide from "@/components/product/DeliverySlide";
+import ProductTabDescription from "@/components/product/ProductTabDescription";
+import RelatedProducts from "@/components/product/RelatedProducts";
 
 const images = [
   "http://img.bbystatic.com/BestBuy_US/images/products/3331/333179_sa.jpg",
@@ -28,11 +28,10 @@ const images = [
   "http://img.bbystatic.com/BestBuy_US/images/products/9852/9852688_sa.jpg",
   "http://img.bbystatic.com/BestBuy_US/images/products/3122/312290_sa.jpg",
 ];
-const ProductDetails = ({ children, id }) => {
+const ProductDetails = ({ children, params }) => {
   const [product, setProduct] = useState(null);
   const [activeImage, setActiveImage] = useState();
-
-  console.log(product, activeImage);
+  const { id } = params;
 
   const getProduct = async () => {
     const product = await getProductByID(id);
@@ -50,13 +49,13 @@ const ProductDetails = ({ children, id }) => {
         {/* Product Details  */}
         <div className="max-w-[400px] md:max-w-full mx-auto md:flex justify-center items-start gap-6 w-full">
           {/* Product Image (Left side)  */}
-          <div className="md:w-[500px]">
+          <div className="md:w-[500px] flex-1/2">
             <Image
               alt="title"
               src={activeImage}
               width={1000}
               height={1000}
-              className="w-full h-[400px] bg-white border border-retro p-4 rounded-md"
+              className="w-full md:w-[500px] h-[400px] bg-white border-2 border-retro rounded-md"
               quality={100}
             />
             {/* all images  */}
@@ -65,9 +64,9 @@ const ProductDetails = ({ children, id }) => {
                 <Image
                   alt="title"
                   src={image}
-                  width={100}
-                  height={100}
-                  className={`w-20 h-20 bg-white p-4  ${
+                  width={1000}
+                  height={1000}
+                  className={`w-20 h-20 bg-white p-2  ${
                     image === activeImage && "border border-retro rounded-md"
                   }`}
                   onClick={() => setActiveImage(image)}

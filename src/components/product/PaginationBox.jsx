@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Pagination,
@@ -10,8 +11,13 @@ import {
 } from "@/components/ui/pagination";
 import Link from "next/link";
 import { getPaginationRange } from "@/utils/paginationRange";
+import { useSearchParams } from "next/navigation";
 
-const PaginationBox = ({ totalPages, currentPage }) => {
+const PaginationBox = ({ totalPages }) => {
+  const searchParams = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") || 1);
+  console.log(currentPage, totalPages);
+
   // Get Pagination Range
   const paginationRange = getPaginationRange({ currentPage, totalPages });
 

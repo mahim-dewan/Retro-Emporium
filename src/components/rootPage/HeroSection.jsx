@@ -23,7 +23,7 @@ const HeroSection = () => {
     <div className="flex flex-col lg:flex-row justify-around gap-2">
       <Carousel
         plugins={[plugin.current]}
-        className="w-full lg:w-6/8 h-[200px] md-h-[300px] lg:h-[400px]"
+        className="w-full lg:w-6/8  mdh-[200px]-h-[300px] lg:h-[400px]"
         onMouseEnter={() => plugin.current.stop()}
         onMouseLeave={() => plugin.current.play()}
         opts={{ loop: true }}
@@ -78,7 +78,7 @@ const HeroSection = () => {
         {/* <CarouselPrevious />
         <CarouselNext /> */}
       </Carousel>
-      <div className="flex flex-row lg:flex-col items-start justify-between p-1 gap-[10px] w-full lg:w-2/8">
+      <div className="hidden lg:flex flex-row lg:flex-col items-start justify-between p-1 gap-[10px] w-full lg:w-2/8 ">
         <Image
           alt="discount"
           src={discount}

@@ -5,6 +5,7 @@
   overflow-x: hidden;
 } */
 
+
 :root{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #EAEFEF;
@@ -24,12 +25,21 @@
 
 @layer components{
   .btn-fill{
-    @apply py-2 px-5 rounded-md bg-retro text-white hover:bg-amber-700 border-retro border text-xl font-semibold my-5 mx-2 cursor-pointer;
+    @apply py-2 px-5 rounded-md bg-retro text-white hover:bg-amber-700 border-retro border  font-semibold my-5 mx-2 cursor-pointer;
   }
 
   .btn-outline{
-    @apply py-2 px-5 rounded-md border-retro border text-xl font-semibold my-5 mx-2 cursor-pointer;
+    @apply py-2 px-5 rounded-md border-retro border font-semibold my-5 mx-2 cursor-pointer;
   }
+
+  .btn-fill-gradient{
+    @apply py-2 px-5 rounded-md bg-gradient-to-r from-dark to-retro text-white hover:bg-gradient-to-l border-retro border text-sm font-semibold my-5 mx-2 cursor-pointer;
+  }
+
+  .btn-outline-gradient{
+    @apply py-2 px-5 rounded-md border-retro hover:bg-gradient-to-l from-dark to-retro hover:text-white border text-sm font-semibold my-5 mx-2 cursor-pointer;
+  }
+
 
   .active-btn{
     @apply font-black text-retro
@@ -39,7 +49,7 @@
   }
 
   .box-shadow{
-    @apply p-2 my-5 border border-gray-300 rounded-lg shadow-lg
+    @apply p-2 my-5 border border-pastel-olive rounded-lg shadow-lg
   }
 }
 

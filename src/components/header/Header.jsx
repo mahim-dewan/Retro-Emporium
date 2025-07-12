@@ -11,6 +11,7 @@ import { Badge } from "../ui/badge";
 import { GiShoppingCart } from "react-icons/gi";
 import { IoIosArrowDown } from "react-icons/io";
 import CategorySlidebar from "./CategorySlidebar";
+import BottomNav from "./BottomNav";
 
 const Header = () => {
   const [openSlidebar, setOpenSlidebar] = useState(false);
@@ -74,6 +75,8 @@ const Header = () => {
       <div className="md:hidden w-4/5 mx-auto">
         <SearchBar />
       </div>
+      {/* Bottom's Menu (mobile only ) */}
+      
     </header>
   );
 };

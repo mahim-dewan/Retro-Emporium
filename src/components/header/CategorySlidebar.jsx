@@ -15,15 +15,19 @@ import Link from "next/link";
 
 const CategorySlidebar = () => {
   const [categories, setCategories] = useState([]);
-  console.log(categories.categories);
 
-  const getAllCategories = async () => {
-    const allCategory = await getAllCategory();
-    setCategories(allCategory);
-  };
   useEffect(() => {
+    const getAllCategories = async () => {
+      try {
+        const allCategory = await getAllCategory();
+        setCategories(allCategory);
+      } catch (err) {
+        console.log(err);
+      }
+    };
     getAllCategories();
   }, []);
+
   return (
     <Sheet>
       <SheetTrigger className="bg-none">
@@ -33,7 +37,7 @@ const CategorySlidebar = () => {
         <SheetHeader>
           <SheetTitle>All Categories</SheetTitle>
           <ul className="grid grid-cols-2 flex-wrap  ga-3">
-            {categories.categories?.map((category) => (
+            {categories?.map((category) => (
               <li className="m-2 hover:text-retro">
                 <SheetClose asChild>
                   <Link href={`/${category.name}`}>{category.name}</Link>

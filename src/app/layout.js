@@ -7,6 +7,7 @@ import LoginForm from "@/components/auth/LoginForm";
 import { ToastContainer } from "react-toastify";
 import RegisterForm from "@/components/auth/RegisterForm";
 import Footer from "@/components/rootPage/Footer";
+import BottomNav from "@/components/header/BottomNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,14 +25,16 @@ export const metadata = {
     "Step into the past with Retro Emporium – vintage-inspired clothing and accessories for the modern trendsetter.",
   icons: {
     icon: "/favicon.png",
+
   },
+  
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AppContextProvider>
           <SessionProviderWrapper>
@@ -51,6 +54,9 @@ export default function RootLayout({ children }) {
 
               <ToastContainer autoClose={2000} position="top-right" />
             </main>
+            <div className="fixed bottom-0 w-full md:hidden">
+              <BottomNav />
+            </div>
             <Footer />
           </SessionProviderWrapper>
         </AppContextProvider>

@@ -1,9 +1,10 @@
 import Pagination from "@/components/product/PaginationBox";
 import ProductCard from "@/components/product/ProductCard";
 import { getJustForYouProducts } from "@/utils/api";
+import Link from "next/link";
 
 const JustForYouProducts = async () => {
-  const {products} = await getJustForYouProducts();
+  const { products } = await getJustForYouProducts();
 
   return (
     <div className="flex flex-col justify-between min-h-[80vh]">
@@ -13,6 +14,9 @@ const JustForYouProducts = async () => {
         ))}
       </div>
       {/* <Pagination totalPages={data?.totalPages} currentPage={page} /> */}
+      <Link href={"products"} className="title text-base w-fit mx-auto underline my-5">
+        {"See More>>>"}
+      </Link>
     </div>
   );
 };

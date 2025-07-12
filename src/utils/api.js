@@ -16,9 +16,10 @@ export const getProductsByFilter = async ({ category, minPrice, maxPrice }) => {
 
 // Fetch all Categories
 export const getAllCategory = async () => {
-  const url = `${process.env.BASE_API}/api/categories/getAllCategory`;
+  const url = `${process.env.NEXT_PUBLIC_BASE_API}/api/categories/getAllCategory`;
   const res = await fetch(url, { cache: "no-store" });
   const categories = await res.json();
+
   return categories;
 };
 

@@ -8,7 +8,7 @@ export async function GET(req) {
 
     const categories = await Category.find();
 
-    return NextResponse.json({ categories });
+    return NextResponse.json(categories);
   } catch (err) {
     return NextResponse.json({ message: err?.message });
   }

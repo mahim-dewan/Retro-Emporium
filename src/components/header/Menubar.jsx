@@ -1,8 +1,10 @@
-"use client";
+// "use client";
 import React from "react";
 import Button from "../utils/Button";
 import { useAppContext } from "@/context/AppContext";
 import { signOut, useSession } from "next-auth/react";
+import ProductNav from "./ProductNav";
+import { ProfileDropDown } from "./ProfileDropDown";
 
 const Menubar = () => {
   const { setOpenLoginForm, setOpenRegisterForm } = useAppContext();
@@ -12,25 +14,22 @@ const Menubar = () => {
 
   return (
     <div className="flex items-center justify-end">
+      {/* Products Menu  */}
+      <ProductNav />
       {/* Login and Register Button */}
       {user ? (
-        <Button
-          handler={() => signOut({ redirect: false })}
-          className={"btn-fill"}
-        >
-          Sign Out
-        </Button>
+        <ProfileDropDown />
       ) : (
         <div className="flex items-center gap-2">
           <Button
             handler={() => setOpenLoginForm(true)}
-            className="btn-outline"
+            className="btn-outline-gradient"
           >
             Login
           </Button>
           <Button
             handler={() => setOpenRegisterForm(true)}
-            className="btn-fill text-white"
+            className="btn-fill-gradient text-white"
           >
             Resister
           </Button>
