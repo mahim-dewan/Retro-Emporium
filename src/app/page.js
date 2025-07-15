@@ -1,7 +1,5 @@
 import CategoryFeature from "@/components/product/CategoryFeature";
 import HeroSection from "@/components/rootPage/HeroSection";
-// import { authOptions } from "@/utils/auth";
-// import { getServerSession } from "next-auth";
 import Image from "next/image";
 import { Suspense } from "react";
 import paymentMethods from "../../public/paymentMethods.png";
@@ -9,9 +7,6 @@ import CategoryMenuList from "@/components/product/CategoryMenuList";
 import JustForYouProducts from "@/components/product/JustForYouProducts";
 
 export default async function Home() {
-  // const session = await getServerSession(authOptions);
-  // console.log("session called", session);
-
   return (
     <div>
       {/* Category menu  */}

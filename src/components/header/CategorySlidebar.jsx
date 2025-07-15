@@ -10,7 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { IoIosArrowDown } from "react-icons/io";
-import { getAllCategory } from "@/utils/api";
+import { getAllCategory } from "@/lib/api";
 import Link from "next/link";
 
 const CategorySlidebar = () => {

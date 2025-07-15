@@ -41,7 +41,6 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      console.log(user, "user");
       if (user) {
         token.user = user;
       }
@@ -59,10 +58,3 @@ export const authOptions = {
     signIn: "/login",
   },
 };
-
-// export const otpResend = () => {
-//    sessionStorage.setItem("registerEmail", email);
-//   router.push("/verify");
-//   setOpenLoginForm(false);
-
-// };

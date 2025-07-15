@@ -19,7 +19,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
-import { resendOTP } from "@/utils/api";
+import { useResendOTPMutation } from "@/features/api/apiSlice";
 
 export default function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
@@ -32,6 +32,7 @@ export default function LoginForm({ className, ...props }) {
     openRegisterForm,
     setOpenRegisterForm,
   } = useAppContext();
+  const [resendOTP] = useResendOTPMutation();
 
   // submit for login
   const loginHandler = async () => {
@@ -44,7 +45,7 @@ export default function LoginForm({ className, ...props }) {
     if (!result.ok) {
       // check user email is verified
       if (result.error === "Please Verify your email.") {
-        return toast.error((t) => (
+        return toast.error(() => (
           <span className="flex">
             {result.error}
             <button
@@ -53,7 +54,6 @@ export default function LoginForm({ className, ...props }) {
                 sessionStorage.setItem("registerEmail", email);
                 router.push("/verify");
                 setOpenLoginForm(false);
-                // toast.dismiss(t.id)
                 resendOTP(email);
               }}
             >

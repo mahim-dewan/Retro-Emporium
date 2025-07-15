@@ -1,17 +1,10 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { GiShoppingCart } from "react-icons/gi";
 import { FaTruckArrowRight } from "react-icons/fa6";
-import {
-  FaMapMarkerAlt,
-  FaTruck,
-  FaMoneyBillAlt,
-  FaCreditCard,
-  FaExclamationCircle,
-} from "react-icons/fa";
-import { MdOutlineAddIcCall, MdOutlineGppBad } from "react-icons/md";
-import { getProductByID } from "@/utils/api";
+import { FaMapMarkerAlt, FaTruck, FaMoneyBillAlt } from "react-icons/fa";
+import { MdOutlineGppBad } from "react-icons/md";
 import Bkash from "../../../../../public/Bkash.jpg";
 import Nagad from "../../../../../public/nagad.jpg";
 import Mastercard from "../../../../../public/mastercard.jpg";
@@ -21,6 +14,7 @@ import Button from "@/components/utils/Button";
 import DeliverySlide from "@/components/product/DeliverySlide";
 import ProductTabDescription from "@/components/product/ProductTabDescription";
 import RelatedProducts from "@/components/product/RelatedProducts";
+import { useGetProductByIDQuery } from "@/features/api/apiSlice";
 
 const images = [
   "http://img.bbystatic.com/BestBuy_US/images/products/3331/333179_sa.jpg",
@@ -29,19 +23,21 @@ const images = [
   "http://img.bbystatic.com/BestBuy_US/images/products/3122/312290_sa.jpg",
 ];
 const ProductDetails = ({ children, params }) => {
-  const [product, setProduct] = useState(null);
   const [activeImage, setActiveImage] = useState();
-  const { id } = params;
-
-  const getProduct = async () => {
-    const product = await getProductByID(id);
-    setProduct(product.product);
-    setActiveImage(product.product.image);
-  };
+  const { id } = use(params);
+  const {
+    data: product,
+    isError,
+    isLoading,
+    isSuccess,
+    error,
+  } = useGetProductByIDQuery(id);
 
   useEffect(() => {
-    getProduct();
-  }, []);
+    if (!isLoading && isSuccess) {
+      setActiveImage(product?.image);
+    }
+  }, [product]);
 
   return (
     <div className="min-h-screen">
@@ -76,7 +72,7 @@ const ProductDetails = ({ children, params }) => {
           </div>
 
           {/* Product Details (Right side) */}
-          <div>
+          <div className="flex-1/2">
             <h2 className="title text-start text-dark">{product?.name}</h2>
             <div className="border-b border-gray-300 pb-5">
               <p>SKU : {product?.sku}</p>

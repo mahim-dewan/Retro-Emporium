@@ -6,11 +6,14 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import Button from "@/components/utils/Button";
 import { useRouter } from "next/navigation";
-import { emailVerify, resendOTP } from "@/utils/api";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/context/AppContext";
+import {
+  useEmailVerifyMutation,
+  useResendOTPMutation,
+} from "@/features/api/apiSlice";
+import { Button } from "@/components/ui/button";
 
 const Verify = () => {
   const [otp, setOtp] = useState("");
@@ -18,32 +21,35 @@ const Verify = () => {
   const [email, setEmail] = useState("");
   const { setOpenLoginForm } = useAppContext();
   const router = useRouter();
+  const [emailVerify, { data, isError, isLoading, isSuccess }] =
+    useEmailVerifyMutation();
+  const [resendOTP] = useResendOTPMutation();
 
   // Verify submit button
   const handleVerify = async () => {
     try {
       const res = await emailVerify({ email, otp });
 
-      if (res.status !== 200) return toast.error(res.message);
+      if (res?.error) return toast.error(res.error?.data?.message);
       setOtp("");
-      toast.success(res.message);
+      toast.success(res.data.message);
       router.replace("/");
       setOpenLoginForm(true);
     } catch (err) {
-      toast.error(message);
+      toast.error(err?.message || "Something went wrong");
     }
   };
 
   // Resend OTP handler
   const handleResend = async () => {
     try {
-      const res = await resendOTP(email);
-      if (res.status !== 200) return toast.error(res.message);
+      const res = await resendOTP({ email });
+      if (res?.error) return toast.error(res.error?.data?.message);
       setOtp("");
       setSecondLeft(120);
-      toast.success(res.message);
+      toast.success(res.data.message);
     } catch (err) {
-      toast.error(message);
+      toast.error(err?.message || "Something went wrong");
     }
   };
 
@@ -119,21 +125,22 @@ const Verify = () => {
             <p>Remaining Time : {timeFormat(secondLeft)} </p>
             <Button
               className={"underline cursor-pointer hover:text-retro"}
-              handler={() => handleResend()}
+              onClick={() => handleResend()}
             >
               Resend
             </Button>
           </div>
           <div className="mt-5">
             <Button
+              disabled={isLoading}
               className={"btn-fill my-1 w-full"}
-              handler={() => handleVerify()}
+              onClick={() => handleVerify()}
             >
-              Verify
+              {isLoading ? "Verifing..." : "Verify"}
             </Button>
             <Button
               className={"btn-outline my-1 w-full"}
-              handler={() => router.push("/")}
+              onClick={() => router.push("/")}
             >
               Cancel
             </Button>
