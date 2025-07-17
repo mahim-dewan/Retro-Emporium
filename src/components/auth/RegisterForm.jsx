@@ -17,6 +17,7 @@ import { IoClose } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
+import { useCreateUserMutation } from "@/features/api/apiSlice";
 
 const RegisterForm = ({ className, ...props }) => {
   const [newUser, setNewUser] = useState({
@@ -35,6 +36,9 @@ const RegisterForm = ({ className, ...props }) => {
   } = useAppContext();
   // Next Router for redirect
   const router = useRouter();
+  // RTK Query hook call
+  const [createUser, { data, isError, error, isLoading, isSuccess }] =
+    useCreateUserMutation();
 
   // onChange handler
   const onChangeHandler = (e) => {
@@ -53,22 +57,14 @@ const RegisterForm = ({ className, ...props }) => {
       if (newUser.password !== newUser.confirmPass)
         return toast.warning("Password doesn't matched");
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API}api/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...newUser }),
-        }
-      );
-      const data = await res.json();
+      const res = await createUser({ ...newUser });
 
-      if (!res.ok) return toast.error(data?.message);
+      if (res.error) {
+        return toast.error(res.error?.data?.message || "Registration failed");
+      }
 
       // set email for verify page
-      sessionStorage.setItem("registerEmail", data.data.email);
+      sessionStorage.setItem("registerEmail", res.data.data.email);
 
       setNewUser({
         firstname: "",
@@ -79,11 +75,11 @@ const RegisterForm = ({ className, ...props }) => {
       });
 
       // redirect to verify page
-      toast.success(data?.message);
+      toast.success(res.data.message || "Registration Successfull");
       setOpenRegisterForm(false);
       router.push("/verify");
     } catch (err) {
-      toast(err?.message);
+      toast.error(err?.message);
     }
   };
 
@@ -194,10 +190,11 @@ const RegisterForm = ({ className, ...props }) => {
                       />
                     </div>
                     <Button
+                      disabled={isLoading}
                       type="submit"
-                      className="w-full mx-auto mb-0 btn-fill text-white 2xl:text-2xl 2xl:py-6"
+                      className={`w-full mx-auto mb-0 btn-fill text-white 2xl:text-2xl 2xl:py-6`}
                     >
-                      Resister
+                      {isLoading ? "Please Wait..." : "Register"}
                     </Button>
                   </div>
                   <div className="text-center text-sm 2xl:text-xl">

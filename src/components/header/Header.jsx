@@ -9,9 +9,7 @@ import Slidebar from "./Slidebar";
 import SearchBar from "./SearchBar";
 import { Badge } from "../ui/badge";
 import { GiShoppingCart } from "react-icons/gi";
-import { IoIosArrowDown } from "react-icons/io";
 import CategorySlidebar from "./CategorySlidebar";
-import BottomNav from "./BottomNav";
 
 const Header = () => {
   const [openSlidebar, setOpenSlidebar] = useState(false);

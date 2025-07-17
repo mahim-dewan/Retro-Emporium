@@ -13,11 +13,13 @@ import hero3 from "../../../public/hero/hero3.jpg";
 import discount from "../../../public/hero/discount.jpg";
 import superSale from "../../../public/hero/superSale.jpg";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 const HeroSection = () => {
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
+  const session = useSession();
 
   return (
     <div className="flex flex-col lg:flex-row justify-around gap-2">

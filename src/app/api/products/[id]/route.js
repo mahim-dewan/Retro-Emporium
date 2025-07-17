@@ -4,10 +4,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
   const { id } = await params;
-  console.log(id);
-  
+
   try {
-    await connectDB()
+    await connectDB();
     const product = await Product.findById(id);
 
     if (!product)
@@ -16,7 +15,7 @@ export async function GET(req, { params }) {
         { status: 404 }
       );
 
-    return NextResponse.json({ product });
+    return NextResponse.json(product);
   } catch (err) {
     return NextResponse.json(
       { error: "Invalid ID or server error" },

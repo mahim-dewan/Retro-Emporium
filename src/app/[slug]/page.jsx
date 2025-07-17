@@ -2,7 +2,7 @@
 import PriceRange from "@/components/filterItems/PriceRange";
 import PaginationBox from "@/components/product/PaginationBox";
 import ProductCard from "@/components/product/ProductCard";
-import { getProductsByFilter } from "@/utils/api";
+import { useFilteredProductsQuery } from "@/features/api/apiSlice";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -10,26 +10,31 @@ const SinglecategorySlug = ({ params }) => {
   const { slug: category } = params;
   // Selected price range
   const [priceRange, setPriceRange] = useState({});
-  // Fetched products
-  const [products, setProducts] = useState([]);
   // Page Number for Pagination
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") || 1);
-  console.log(products);
-
-  // Fetch call
-  const getProducts = async () => {
-    const allProducts = await getProductsByFilter({
-      category,
-      minPrice: priceRange.min,
-      maxPrice: priceRange.max,
-    });
-    setProducts(allProducts);
-  };
+  // Get Price Range
+  const minPrice = searchParams.get("min Price");
+  const maxPrice = searchParams.get("max Price");
+  // RTK Query hook call
+  const {
+    data: products,
+    isError,
+    isLoading,
+    isSuccess,
+    error,
+  } = useFilteredProductsQuery({
+    category,
+    minPrice: priceRange.min,
+    maxPrice: priceRange.max,
+  });
 
   useEffect(() => {
-    getProducts();
-  }, [priceRange]);
+    setPriceRange({
+      min: parseInt(minPrice),
+      max: parseInt(maxPrice) || Infinity,
+    });
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -47,7 +52,12 @@ const SinglecategorySlug = ({ params }) => {
           </div>
 
           {/* Pagination box  */}
-          {products?.totalPages >= 1 && <PaginationBox totalPages={products?.totalPages} currentPage={page} />}
+          {products?.totalPages >= 1 && (
+            <PaginationBox
+              totalPages={products?.totalPages}
+              currentPage={page}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -47,7 +47,7 @@ export function ProfileDropDown() {
               "cursor-pointer  hover:rounded-lg text-md font-semibold hover:shadow-sm shadow-dark"
             }
           >
-            <Link href={"/profile"}>Profile</Link>
+            <Link href={"/admin/dashboard"}>Dashboard</Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             asChild

@@ -1,10 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* main {
-  overflow-x: hidden;
-} */
-
 
 :root{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -51,6 +47,7 @@
   .box-shadow{
     @apply p-2 my-5 border border-pastel-olive rounded-lg shadow-lg
   }
+
 }
 
 

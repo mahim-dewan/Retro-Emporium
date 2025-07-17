@@ -3,10 +3,13 @@ import React from "react";
 import Link from "next/link";
 import Button from "../utils/Button";
 import { FaPlus } from "react-icons/fa";
-import { getAllCategory } from "@/utils/api";
+import { getAllCategory } from "@/lib/api";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/auth";
 
 const CategoryFeature = async () => {
-  const  categories  = await getAllCategory();
+  const categories = await getAllCategory();
+  const { user } = getServerSession(authOptions);
 
   return (
     <div>
@@ -33,10 +36,12 @@ const CategoryFeature = async () => {
             <h2> {category?.name}</h2>
           </Link>
         ))}
-        <Button className="w-26 md:w-32 min-h-fit border border-pastel-olive hover:text-dark hover:bg-pastel-olive active:text-dark active:bg-pastel-olive flex flex-col items-center justify-center rounded-lg text-center break-words cursor-pointer py-2">
-          <FaPlus />
-          <h2> Add Category</h2>
-        </Button>
+        {user?.role === "admin" && (
+          <Button className="w-26 md:w-32 min-h-fit border border-pastel-olive hover:text-dark hover:bg-pastel-olive active:text-dark active:bg-pastel-olive flex flex-col items-center justify-center rounded-lg text-center break-words cursor-pointer py-2">
+            <FaPlus />
+            <h2> Add Category</h2>
+          </Button>
+        )}
       </div>
     </div>
   );
