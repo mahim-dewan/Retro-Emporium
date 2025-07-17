@@ -49,7 +49,7 @@ export default function RootLayout({ children }) {
                 }
               />
               <Header />
-              <main className="max-w-[1500px] mx-auto">
+              <main className="max-w-[1500px] mx-auto shadow-xl">
                 {children}
 
                 <ToastContainer autoClose={2000} position="top-right" />
