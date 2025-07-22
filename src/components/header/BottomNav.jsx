@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { IoHome } from "react-icons/io5";
 import { GiShoppingCart } from "react-icons/gi";
@@ -5,15 +6,13 @@ import { MdCategory } from "react-icons/md";
 import Button from "../utils/Button";
 import { CiSquarePlus } from "react-icons/ci";
 import { TbTruckDelivery } from "react-icons/tb";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/utils/auth";
 import BottomProfile from "./BottomProfile";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-const BottomNav = async () => {
-  // Get Login user
-  const session = await getServerSession(authOptions);
-  const user = session?.user || null;
+const BottomNav = () => {
+  const { data: session, status } = useSession();
+  const user = session?.user;
 
   return (
     <div className="bg-white text-dark border-t border-pastel-olive p-2">
@@ -24,11 +23,17 @@ const BottomNav = async () => {
         </Link>
         {user?.role === "admin" ? (
           <>
-            <Link href={"/admin/orders"} className={"flex flex-col items-center text-sm"}>
+            <Link
+              href={"/admin/orders"}
+              className={"flex flex-col items-center text-sm"}
+            >
               <TbTruckDelivery size={26} />
               Orders
             </Link>
-            <Link href={"/admin/add-product"} className={"flex flex-col items-center text-sm"}>
+            <Link
+              href={"/admin/add-product"}
+              className={"flex flex-col items-center text-sm"}
+            >
               <CiSquarePlus size={26} />
               Add
             </Link>
