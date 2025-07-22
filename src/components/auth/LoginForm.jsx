@@ -18,7 +18,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { useAppContext } from "@/context/AppContext";
+import { useAuthModalsContext } from "@/context/authModalsContext";
 import { useResendOTPMutation } from "@/features/api/apiSlice";
 
 export default function LoginForm({ className, ...props }) {
@@ -31,10 +31,10 @@ export default function LoginForm({ className, ...props }) {
     setOpenLoginForm,
     openRegisterForm,
     setOpenRegisterForm,
-  } = useAppContext();
+  } = useAuthModalsContext();
   const [resendOTP] = useResendOTPMutation();
 
-  // submit for login
+  // Login handler
   const loginHandler = async () => {
     const result = await signIn("credentials", {
       redirect: false,
@@ -72,7 +72,9 @@ export default function LoginForm({ className, ...props }) {
     // Login form close and redirect to home
     setOpenLoginForm(false);
     toast.success("Login successful", {
-      onClose: () => router.push("/"),
+      onClose: () => {
+        router.refresh();
+      },
     });
   };
 

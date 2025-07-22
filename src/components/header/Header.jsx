@@ -10,9 +10,12 @@ import SearchBar from "./SearchBar";
 import { Badge } from "../ui/badge";
 import { GiShoppingCart } from "react-icons/gi";
 import CategorySlidebar from "./CategorySlidebar";
+import { CiSquarePlus } from "react-icons/ci";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
   const [openSlidebar, setOpenSlidebar] = useState(false);
+  const { data: user } = useSession();
 
   return (
     <header className="sticky md:top-0 -top-16 z-40 border-b  bg-white border-gray-300 min-w-full">
@@ -36,6 +39,15 @@ const Header = () => {
           <div className=" md:hidden">
             <CategorySlidebar />
           </div>
+
+          {user?.user?.role === "admin" && (
+            <Link
+              href={"/admin/add-product"}
+              className="hidden md:block ml-8 -mr-2"
+            >
+              <CiSquarePlus className="text-3xl  cursor-pointer" />
+            </Link>
+          )}
 
           {/* Shopping Cart  */}
           <Link href={"/cart"} className="relative mx-4">
@@ -74,7 +86,6 @@ const Header = () => {
         <SearchBar />
       </div>
       {/* Bottom's Menu (mobile only ) */}
-      
     </header>
   );
 };

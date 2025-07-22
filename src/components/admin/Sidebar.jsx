@@ -47,7 +47,17 @@ const menuList = [
 ];
 
 export function AdminSidebar() {
-  const { open } = useSidebar();
+  const {
+    state,
+    open,
+    setOpen,
+    openMobile,
+    setOpenMobile,
+    isMobile,
+    toggleSidebar,
+  } = useSidebar();
+  console.log(isMobile);
+
   return (
     <Sidebar
       variant="floating"

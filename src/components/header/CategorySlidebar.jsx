@@ -12,33 +12,22 @@ import {
 import { IoIosArrowDown } from "react-icons/io";
 import { getAllCategory } from "@/lib/api";
 import Link from "next/link";
+import { useGetCategoryQuery } from "@/features/api/apiSlice";
 
 const CategorySlidebar = () => {
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const getAllCategories = async () => {
-      try {
-        const allCategory = await getAllCategory();
-        setCategories(allCategory);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getAllCategories();
-  }, []);
+  const { data: categories } = useGetCategoryQuery();
 
   return (
     <Sheet>
       <SheetTrigger className="bg-none">
         <IoIosArrowDown className="text-3xl text-retro cursor-pointer m-2 -mr-3" />
       </SheetTrigger>
-      <SheetContent side="top" className={"bg-white"}>
+      <SheetContent side="top" className={"bg-white max-h-5/6 overflow-y-auto"}>
         <SheetHeader>
           <SheetTitle>All Categories</SheetTitle>
           <ul className="grid grid-cols-2 flex-wrap  ga-3">
             {categories?.map((category) => (
-              <li className="m-2 hover:text-retro">
+              <li key={category._id} className="m-2 hover:text-retro">
                 <SheetClose asChild>
                   <Link href={`/${category.name}`}>{category.name}</Link>
                 </SheetClose>
