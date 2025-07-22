@@ -11,31 +11,27 @@ import Image from "next/image";
 import Button from "../utils/Button";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export function ProfileDropDown() {
+export function ProfileDropDown({ children, position }) {
+  const router = useRouter();
+
+  // Log out handler
+  const handleLogOut = async () => {
+    await signOut({ redirect: false });
+    router.replace("/");
+    router.refresh();
+  };
+
   return (
     <div className="md:mx-5 md:my-2">
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger>
-          <div className="w-8 h-8 md:w-10 md:h-10  p-0 rounded-full overflow-hidden mt-1 border border-retro cursor-pointer">
-            <Image
-              src={
-                "http://img.bbystatic.com/BestBuy_US/images/products/4390/43900_sa.jpg"
-              }
-              alt="Profile"
-              className="w-full h-full "
-              width={44}
-              height={44}
-            />
-          </div>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
         {/* Dropdown Content  */}
         <DropdownMenuContent
           sideOffset={10}
           align="end"
-          className={
-            "bg-white z-50 w-[200px] min-h-96 relative border-pastel-olive"
-          }
+          className={`bg-white z-50 w-[200px] min-h-96 relative border-pastel-olive ${position}`}
         >
           <DropdownMenuLabel className={"text-lg font-bold"}>
             My Account
@@ -73,7 +69,7 @@ export function ProfileDropDown() {
             }
           >
             <Button
-              handler={() => signOut({ redirect: false })}
+              handler={handleLogOut}
               className={
                 "cursor-pointer text-md text-center font-semibold hover:shadow-sm shadow-dark w-full p-2 rounded-lg"
               }

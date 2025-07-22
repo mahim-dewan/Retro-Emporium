@@ -9,7 +9,8 @@ import { authOptions } from "@/utils/auth";
 
 const CategoryFeature = async () => {
   const categories = await getAllCategory();
-  const { user } = getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
+  const user = session?.user || null;
 
   return (
     <div>

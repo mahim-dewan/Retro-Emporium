@@ -15,7 +15,7 @@ import Image from "next/image";
 import logo from "../../../public/Retro-logo.png";
 import { IoClose } from "react-icons/io5";
 import { toast } from "react-toastify";
-import { useAppContext } from "@/context/AppContext";
+import { useAuthModalsContext } from "@/context/authModalsContext";
 import { useRouter } from "next/navigation";
 import { useCreateUserMutation } from "@/features/api/apiSlice";
 
@@ -33,7 +33,7 @@ const RegisterForm = ({ className, ...props }) => {
     setOpenRegisterForm,
     openLoginForm,
     setOpenLoginForm,
-  } = useAppContext();
+  } = useAuthModalsContext();
   // Next Router for redirect
   const router = useRouter();
   // RTK Query hook call

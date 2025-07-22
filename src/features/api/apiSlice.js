@@ -18,6 +18,10 @@ const apiSlice = createApi({
     }),
 
     // *********************** Category ********************
+    getCategory: builder.query({
+      query: () => "/categories/getCategory",
+    }),
+
     getSubCategory: builder.query({
       query: () => "/categories/getSubCategory",
     }),
@@ -54,6 +58,7 @@ const apiSlice = createApi({
 export const {
   useGetProductByIDQuery,
   useFilteredProductsQuery,
+  useGetCategoryQuery,
   useGetSubCategoryQuery,
   useCreateUserMutation,
   useEmailVerifyMutation,

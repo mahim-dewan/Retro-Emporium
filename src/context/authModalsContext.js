@@ -1,26 +1,25 @@
 "use client";
 import React, { createContext, useContext, useState } from "react";
 
-const AppContext = createContext();
+const AuthModalsContext = createContext();
 
-const AppContextProvider = ({ children }) => {
+const AuthModalsProvider = ({ children }) => {
   const [openLoginForm, setOpenLoginForm] = useState(false);
   const [openRegisterForm, setOpenRegisterForm] = useState(false);
   return (
-    <AppContext.Provider
+    <AuthModalsContext.Provider
       value={{
         openLoginForm,
         setOpenLoginForm,
         openRegisterForm,
         setOpenRegisterForm,
-        
       }}
     >
       {children}
-    </AppContext.Provider>
+    </AuthModalsContext.Provider>
   );
 };
 
 // custom hook
-export const useAppContext = () => useContext(AppContext);
-export default AppContextProvider;
+export const useAuthModalsContext = () => useContext(AuthModalsContext);
+export default AuthModalsProvider;

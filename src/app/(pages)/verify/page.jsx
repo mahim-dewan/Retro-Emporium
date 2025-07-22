@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/input-otp";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useAppContext } from "@/context/AppContext";
+import { useAuthModalsContext } from "@/context/authModalsContext";
 import {
   useEmailVerifyMutation,
   useResendOTPMutation,
@@ -19,7 +19,7 @@ const Verify = () => {
   const [otp, setOtp] = useState("");
   const [secondLeft, setSecondLeft] = useState(120);
   const [email, setEmail] = useState("");
-  const { setOpenLoginForm } = useAppContext();
+  const { setOpenLoginForm } = useAuthModalsContext();
   const router = useRouter();
   const [emailVerify, { data, isError, isLoading, isSuccess }] =
     useEmailVerifyMutation();
