@@ -31,7 +31,7 @@ const BottomNav = () => {
               Orders
             </Link>
             <Link
-              href={"/admin/add-product"}
+              href={"/admin/dashboard/create-product"}
               className={"flex flex-col items-center text-sm"}
             >
               <CiSquarePlus size={26} />

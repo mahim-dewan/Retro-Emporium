@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
-import logo from "../../../../../public/Retro-logo.png";
+import logo from "../../../../../../public/Retro-logo.png";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,

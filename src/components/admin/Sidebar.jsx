@@ -11,38 +11,39 @@ import {
   useSidebar,
 } from "../ui/sidebar";
 // React Icons
-import { IoIosHome } from "react-icons/io";
-import { FaClipboardList } from "react-icons/fa6";
+import { LuClipboardList } from "react-icons/lu";
 import { TbTruckDelivery } from "react-icons/tb";
-import { ImUsers } from "react-icons/im";
-import { IoSettings } from "react-icons/io5";
+import { MdOutlineCategory } from "react-icons/md";
+import {  PiUsersBold } from "react-icons/pi";
+import { IoHomeOutline } from "react-icons/io5";
 
 // menu items
 const menuList = [
   {
     name: "Dashboard",
-    icon: <IoIosHome className="text-2xl text-dark" />,
+    icon: <IoHomeOutline className="text-2xl text-dark" />,
     url: "/",
   },
-  {
-    name: "Product List",
-    icon: <FaClipboardList className="text-2xl text-dark" />,
-    url: "products",
-  },
+  
   {
     name: "Orders",
     icon: <TbTruckDelivery className="text-2xl text-dark" />,
     url: "orders",
   },
   {
-    name: "Customers",
-    icon: <ImUsers className="text-2xl text-dark" />,
-    url: "customers",
+    name: "Products ",
+    icon: <LuClipboardList className="text-2xl text-dark" />,
+    url: "products",
   },
   {
-    name: "Settings",
-    icon: <IoSettings className="text-2xl text-dark" />,
-    url: "settings",
+    name: "Categories",
+    icon: <MdOutlineCategory className="text-2xl text-dark" />,
+    url: "categories",
+  },
+  {
+    name: "Customers",
+    icon: <PiUsersBold className="text-2xl text-dark" />,
+    url: "customers",
   },
 ];
 
@@ -59,11 +60,7 @@ export function AdminSidebar() {
   console.log(isMobile);
 
   return (
-    <Sidebar
-      variant="floating"
-      collapsible="icon"
-      className={"top-20 sticky mr-5"}
-    >
+    <Sidebar variant="floating" collapsible="icon" className={"top-16 sticky "}>
       <SidebarTrigger
         className={` block cursor-pointer hover:text-retro ${
           open ? "ml-auto" : "mx-auto"
@@ -73,7 +70,10 @@ export function AdminSidebar() {
       <SidebarContent className={"border-none"}>
         <SidebarMenu>
           {menuList.map((item) => (
-            <SidebarMenuItem className={"my-1 hover:shadow-lg "}>
+            <SidebarMenuItem
+              key={item.name}
+              className={"my-1 hover:shadow-lg "}
+            >
               <SidebarMenuButton>
                 <Link
                   href={`/admin/dashboard/${item.url}`}

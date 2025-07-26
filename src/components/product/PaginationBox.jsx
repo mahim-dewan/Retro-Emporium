@@ -24,7 +24,7 @@ const PaginationBox = ({ totalPages }) => {
   return (
     <div className="my-5">
       <Pagination>
-        <PaginationContent>
+        <PaginationContent className={"flex flex-wrap"}>
           {/* Previous Button  */}
           <PaginationItem>
             <Link href={`?page=${Math.max(1, currentPage - 1)}`}>
@@ -45,7 +45,7 @@ const PaginationBox = ({ totalPages }) => {
                 <PaginationLink
                   className={`${
                     currentPage == num && "bg-retro"
-                  } hover:bg-retro`}
+                  } hover:border border-retro`}
                 >
                   {num}
                 </PaginationLink>

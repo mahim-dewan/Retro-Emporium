@@ -18,7 +18,7 @@ const Header = () => {
   const { data: user } = useSession();
 
   return (
-    <header className="sticky md:top-0 -top-16 z-40 border-b  bg-white border-gray-300 min-w-full">
+    <header className="sticky md:top-0 -top-16 z-50 border-b  bg-white border-gray-300 min-w-full">
       <div className=" flex justify-between items-center pr-5">
         {/* Left: Logo + Search (md+) */}
         <div className="flex items-center justify-around md:flex-1">
@@ -42,7 +42,7 @@ const Header = () => {
 
           {user?.user?.role === "admin" && (
             <Link
-              href={"/admin/add-product"}
+              href={"/admin/dashboard/create-product"}
               className="hidden md:block ml-8 -mr-2"
             >
               <CiSquarePlus className="text-3xl  cursor-pointer" />

@@ -9,12 +9,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import Button from "../utils/Button";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export function ProfileDropDown({ children, position }) {
   const router = useRouter();
+  const { data } = useSession();
+  const { name, email } = data.user;
 
   // Log out handler
   const handleLogOut = async () => {
@@ -31,12 +33,39 @@ export function ProfileDropDown({ children, position }) {
         <DropdownMenuContent
           sideOffset={10}
           align="end"
-          className={`bg-white z-50 w-[200px] min-h-96 relative border-pastel-olive ${position}`}
+          className={`bg-white z-50 w-[250px] min-h-96 relative border-pastel-olive ${position}`}
         >
-          <DropdownMenuLabel className={"text-lg font-bold"}>
-            My Account
+          {/* Image and Name  */}
+          <DropdownMenuLabel
+            className={
+              "text-lg flex items-center justify-start flex-wrap gap-2 border-b border-gray-300"
+            }
+          >
+            <Image
+              src={
+                "https://images.unsplash.com/photo-1753334479971-573a6e1e0bad?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              }
+              width={100}
+              height={100}
+              alt="profile"
+              className="w-10 h-10 rounded-full border border-retro"
+            />
+            <div className="">
+              <h3 className="text-lg">{name}</h3>
+              <p className="text-[12px] font-normal">{email}</p>
+            </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+
+          {/* Items  */}
+          <DropdownMenuItem
+            asChild
+            className={
+              "cursor-pointer  hover:rounded-lg text-md font-semibold hover:shadow-sm shadow-dark"
+            }
+          >
+            <Link href={"/profile"}>Profile</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem
             asChild
             className={
