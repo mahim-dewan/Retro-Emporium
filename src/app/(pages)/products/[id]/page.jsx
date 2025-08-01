@@ -16,12 +16,6 @@ import ProductTabDescription from "@/components/product/ProductTabDescription";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import { useGetProductByIDQuery } from "@/features/api/apiSlice";
 
-const images = [
-  "http://img.bbystatic.com/BestBuy_US/images/products/3331/333179_sa.jpg",
-  "http://img.bbystatic.com/BestBuy_US/images/products/1501/150115_sa.jpg",
-  "http://img.bbystatic.com/BestBuy_US/images/products/9852/9852688_sa.jpg",
-  "http://img.bbystatic.com/BestBuy_US/images/products/3122/312290_sa.jpg",
-];
 const ProductDetails = ({ children, params }) => {
   const [activeImage, setActiveImage] = useState();
   const { id } = use(params);
@@ -33,9 +27,10 @@ const ProductDetails = ({ children, params }) => {
     error,
   } = useGetProductByIDQuery(id);
 
+
   useEffect(() => {
     if (!isLoading && isSuccess) {
-      setActiveImage(product?.image);
+      setActiveImage(product?.images[0]);
     }
   }, [product]);
 
@@ -47,25 +42,28 @@ const ProductDetails = ({ children, params }) => {
           {/* Product Image (Left side)  */}
           <div className="md:w-[500px] flex-1/2">
             <Image
-              alt="title"
+              alt="product image"
               src={activeImage}
-              width={1000}
-              height={1000}
-              className="w-full md:w-[500px] h-[400px] bg-white border-2 border-retro rounded-md"
+              width={4000}
+              height={3000}
+              className="w-full md:w-[500px] h-[400px] bg-white border-2 object-cover border-retro rounded-md"
               quality={100}
+              unoptimized
             />
             {/* all images  */}
             <div className="my-2 flex">
-              {images.map((image) => (
+              {product?.images.map((image) => (
                 <Image
                   alt="title"
                   src={image}
-                  width={1000}
-                  height={1000}
-                  className={`w-20 h-20 bg-white p-2  ${
-                    image === activeImage && "border border-retro rounded-md"
+                  width={400}
+                  height={300}
+                  className={`w-20 h-20 object-cover bg-white p-1 overflow-hidden rounded-xl  ${
+                    image === activeImage && "border border-retro "
                   }`}
                   onClick={() => setActiveImage(image)}
+                  quality={100}
+                  unoptimized
                 />
               ))}
             </div>
@@ -73,19 +71,30 @@ const ProductDetails = ({ children, params }) => {
 
           {/* Product Details (Right side) */}
           <div className="flex-1/2">
-            <h2 className="title text-start text-dark">{product?.name}</h2>
+            <h2 className="title text-start text-dark">{product?.title}</h2>
             <div className="border-b border-gray-300 pb-5">
-              <p>SKU : {product?.sku}</p>
+              {product?.sku && <p>SKU : {product?.sku}</p>}
               <p>Category: {product?.category}</p>
               <p>sold: 20</p>
-              <p>size: Free</p>
+              {product?.size && <p>size: {product?.size}</p>}
             </div>
             <div className="flex items-center justify-between pt-5">
               <h3>
-                <span className="text-2xl font-bold">TK {product?.price} </span>
-                <span className="text-sm line-through">TK 1250</span>
+                <span className="text-2xl font-bold">
+                  TK {product?.discountPrice}{" "}
+                </span>
+                <span className="text-sm line-through">
+                  TK {product?.regularPrice}
+                </span>
               </h3>
-              <p className="text-retro font-semibold">33% Off</p>
+              <p className="text-retro font-semibold">
+                {Math.round(
+                  ((product?.regularPrice - product?.discountPrice) /
+                    product?.regularPrice) *
+                    100
+                )}
+                % Off
+              </p>
             </div>
 
             <div className="flex justify-center items-start gap-2">

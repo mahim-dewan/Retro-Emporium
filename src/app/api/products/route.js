@@ -37,3 +37,25 @@ export async function GET(req) {
     return NextResponse.json({ message: err?.message });
   }
 }
+
+export async function POST(req) {
+  await connectDB(); // connect to MongoDB
+
+  try {
+    const product = await req.json();
+
+    // Create the product in the database
+    const newProduct = new Product(product); // Create new Product instance
+    await newProduct.save(); // Save to DB
+
+    return NextResponse.json(
+      { newProduct, message: "Product created successfully" },
+      { status: 201 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { error: err?.message || "Failed to create product" },
+      { status: 500 }
+    );
+  }
+}

@@ -17,13 +17,21 @@ const apiSlice = createApi({
         `/products?category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`,
     }),
 
+    createProduct: builder.mutation({
+      query: (data) => ({
+        url: "products",
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    }),
+
     // *********************** Category ********************
     getCategory: builder.query({
       query: () => "/categories/getCategory",
     }),
 
     getSubCategory: builder.query({
-      query: () => "/categories/getSubCategory",
+      query: () => `/categories/getSubCategory/`,
     }),
 
     // *********************** Authentication ********************
@@ -58,6 +66,7 @@ const apiSlice = createApi({
 export const {
   useGetProductByIDQuery,
   useFilteredProductsQuery,
+  useCreateProductMutation,
   useGetCategoryQuery,
   useGetSubCategoryQuery,
   useCreateUserMutation,

@@ -1,104 +1,115 @@
 "use client";
-import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import logo from "../../../../../../public/Retro-logo.png";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import {
+  useCreateProductMutation,
+  useGetCategoryQuery,
+  useGetSubCategoryQuery,
+} from "@/features/api/apiSlice";
+import { imageUploader } from "@/utils/imageUpload";
+import FormInput from "@/components/utils/FormInput";
+import ImageSelector from "@/components/utils/ImageSelector";
+import { cleanProductData } from "@/utils/CleanProductData";
+import { toast } from "react-toastify";
 
-const categories = [
-  { value: "electronics", label: "Electronics" },
-  { value: "fashion", label: "Fashion" },
-  { value: "home_appliances", label: "Home Appliances" },
-  { value: "books", label: "Books" },
-  { value: "beauty", label: "Beauty & Personal Care" },
-  { value: "sports", label: "Sports & Outdoors" },
-  { value: "toys", label: "Toys & Games" },
-  { value: "automotive", label: "Automotive" },
-  { value: "groceries", label: "Groceries" },
-  { value: "furniture", label: "Furniture" },
-];
+// Default Product State
+const defaultProductState = {
+  title: "",
+  description: "",
+  category_id: "",
+  subCategory_id: "",
+  regularPrice: "",
+  discountPrice: "",
+  sku: "",
+  size: "",
+  brand: "",
+  warranty: "",
+  images: [],
+};
 
 const AddProduct = () => {
-  const [product, setProduct] = useState({
-    title: "",
-    description: "",
-    category: "",
-    subCategory: "",
-    price: "",
-    discountPrice: "",
-    sku: "",
-    images: [],
-  });
-  const [images, setImages] = useState([]);
-  const fileInputRef = useRef(null);
+  const [images, setImages] = useState([]); // images local link for show selected images in form
+  const [product, setProduct] = useState(defaultProductState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageFiles, setImageFiles] = useState([]); // Image files for upload in cloudinary
+  const { data: categories } = useGetCategoryQuery();
+  const { data: subCategories } = useGetSubCategoryQuery();
+  const [createProduct, { data }] = useCreateProductMutation();
 
-  // Submit Handler
+  // Filter sub-categories
+  const filteredSubCategories = subCategories?.filter(
+    (c) => c?.category_id === product?.category_id
+  );
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(product);
-    setProduct({
-      title: "",
-      description: "",
-      category: "",
-      subCategory: "",
-      price: "",
-      discountPrice: "",
-      sku: "",
-      images: [],
-    });
-    setImages([]);
+    setIsLoading(true);
+
+    try {
+      const results = await imageUploader(imageFiles); // Upload to Cloudinary
+      const imageURLs = results.map((result) => result.secure_url);
+      const newProduct = cleanProductData(product, imageURLs);
+
+      // Await and unwrap the result directly
+      const res = await createProduct(newProduct).unwrap();
+
+      toast.success("Product created successfully");
+
+      // Reset
+      setProduct(defaultProductState);
+      setImages([]);
+      setImageFiles([]);
+    } catch (err) {
+      toast.error(err?.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // OnChange Handler
-  const handleOnChange = (e) => {
+  const handleChange = (e) => {
     setProduct({
       ...product,
       [e.target.name]: e.target.value,
     });
   };
 
-  // Image Handler
-  const handleImage = (file) => {
-    setProduct({ ...product, images: [...product.images, file] });
-  };
-
   return (
     <div className="min-h-screen py-5">
-      <div className=" bg-pastel-olive p-4 w-4/5 md:w-3/5 h-[600px] md:h-full overflow-y-auto mx-auto rounded-lg">
+      <div className=" bg-pastel-olive p-4 min-w-[300px] w-5/6 md:w-4/5 lg:w-3/5 h-[600px] md:h-full overflow-y-auto mx-auto rounded-lg">
+        {/* Form Header  */}
         <div className="flex flex-col justify-center items-center">
           <Image src={logo} width={100} height={100} alt="logo" />
           <h1 className="title text-xl">Create a new Product</h1>
         </div>
+
         <form onSubmit={handleSubmit}>
-          {/* Title  */}
+          {/* Title Input  */}
+          <FormInput
+            label={"Title"}
+            placeholder={"Duracell - C Batteries (4-Pack)"}
+            name={"title"}
+            value={product?.title}
+            onChange={handleChange}
+            required={true}
+          />
+
+          {/* Description Input */}
           <div>
-            <Label htmlFor="title" className=" font-semibold">
-              Title
-            </Label>
-            <Input
-              id="title"
-              type="text"
-              placeholder="Duracell - C Batteries (4-Pack)"
-              required
-              name="title"
-              value={product.title}
-              onChange={handleOnChange}
-            />
-          </div>
-          {/* Description  */}
-          <div>
-            <Label htmlFor="email" className=" font-semibold">
-              Description
+            <Label htmlFor="description" className=" font-semibold">
+              Description<span className="text-retro">*</span>
             </Label>
             <Textarea
               className={"h-52 w-full"}
@@ -106,142 +117,162 @@ const AddProduct = () => {
               required
               name="description"
               value={product.description}
-              onChange={handleOnChange}
+              onChange={handleChange}
             />
           </div>
+
           {/* Category  */}
           <div className="md:flex items-start justify-between gap-4">
             {/* Category  */}
             <div className="flex-1">
-              <Label htmlFor="email" className=" font-semibold">
-                Categories
+              <Label htmlFor="categories" className=" font-semibold">
+                Categories<span className="text-retro">*</span>
               </Label>
               <Select
-                value={product.category}
+                name={"categories"}
+                value={product.category_id}
                 onValueChange={(value) => {
                   setProduct((prev) => ({
                     ...prev,
-                    category: value,
+                    category_id: value,
+                    subCategory_id: "", // reset subCategory_id on category change
                   }));
                 }}
               >
-                <SelectTrigger className="w-full ">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a Category" />
                 </SelectTrigger>
-                <SelectContent className={"bg-white z-20 h-[300px]"}>
+                <SelectContent className="bg-white z-20 h-[300px]">
                   {categories?.map((c) => (
-                    <SelectItem value={c.value}>{c.label}</SelectItem>
+                    <SelectItem
+                      key={c._id}
+                      value={c._id}
+                      className={"hover:bg-gray-300 cursor-pointer"}
+                    >
+                      {c.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
+
             {/* Sub-Category  */}
             <div className="flex-1">
-              <Label htmlFor="email" className=" font-semibold">
-                Sub-Categories
+              <Label htmlFor="subCategories" className=" font-semibold">
+                Sub-Categories<span className="text-retro">*</span>
               </Label>
               <Select
-                value={product.subCategory}
+                name={"subCategories"}
+                value={product.subCategory_id}
                 onValueChange={(value) => {
                   setProduct((prev) => ({
                     ...prev,
-                    subCategory: value,
+                    subCategory_id: value,
                   }));
                 }}
+                disabled={filteredSubCategories?.length === 0}
               >
-                <SelectTrigger className="w-full ">
-                  <SelectValue placeholder="Select a Category" />
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a Sub-Category" />
                 </SelectTrigger>
-                <SelectContent className={"bg-white z-20 h-[300px]"}>
-                  {categories?.map((c) => (
-                    <SelectItem value={c.value}>{c.label}</SelectItem>
+                <SelectContent className="bg-white z-20 h-[300px]">
+                  {filteredSubCategories?.map((c) => (
+                    <SelectItem
+                      key={c._id}
+                      value={c._id}
+                      className={"hover:bg-gray-300 cursor-pointer"}
+                    >
+                      {c.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
-          {/* Price  */}
+
+          {/* Price */}
           <div className="flex items-start justify-between gap-4">
-            {/* Price  */}
-            <div className="flex-1">
-              <Label htmlFor="price">Price</Label>
-              <Input
-                type="number"
-                placeholder="500"
-                name="price"
-                value={product?.price}
-                onChange={handleOnChange}
-              />
-            </div>
-            {/* Discount  */}
-            <div className="flex-1">
-              <Label htmlFor="discountPrice"> Discount Price</Label>
-              <Input
-                type="number"
-                placeholder="400"
-                name="discountPrice"
-                value={product?.discountPrice}
-                onChange={handleOnChange}
-              />
-            </div>
-          </div>
-          {/* SKU  */}
-          <div>
-            <Label htmlFor="sku" className=" font-semibold">
-              SKU
-            </Label>
-            <Input
-              id="sku"
-              type="text"
-              placeholder="WS-540"
-              required
-              name="sku"
-              value={product.sku}
-              onChange={handleOnChange}
+            {/* regularPrice Input */}
+            <FormInput
+              label={"Regular Price(tk)"}
+              required={true}
+              type="number"
+              placeholder={"1150"}
+              name={"regularPrice"}
+              value={product?.regularPrice}
+              onChange={handleChange}
+            />
+
+            {/* DiscountPrice Input  */}
+            <FormInput
+              label={"Discount Price(tk)"}
+              type="number"
+              placeholder={"950"}
+              name={"discountPrice"}
+              value={product?.discountPrice}
+              onChange={handleChange}
             />
           </div>
-          {/* Images  */}
-          <p className=" font-semibold mt-5">Select Images</p>
-          <div className="my-4 flex items-center justify-start gap-2 flex-wrap">
-            {images?.map((image) => (
-              <Image
-                src={image}
-                alt="image"
-                className="w-20 h-20 rounded-lg"
-                width={1000}
-                height={1000}
-              />
-            ))}
-            <div>
-              {/* Hidden File Input */}
-              <Input
-                id="upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                ref={fileInputRef}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  setImages([...images, URL.createObjectURL(file)]);
-                  handleImage(file);
-                  fileInputRef.current.value = null;
-                }}
-              />
 
-              {/* Custom Label */}
-              <label
-                htmlFor="upload"
-                className="w-20 h-20 text-3xl border border-dashed flex items-center justify-center cursor-pointer rounded-md hover:bg-retro hover:text-white"
-              >
-                +
-              </label>
-            </div>
+          {/* SKU and Size  */}
+          <div className="flex items-start justify-between gap-4">
+            {/* SKU Input  */}
+            <FormInput
+              label={"SKU"}
+              name={"sku"}
+              placeholder={"WS-540"}
+              value={product?.sku}
+              onChange={handleChange}
+            />
+            {/* Size Input  */}
+            <FormInput
+              label={"Size"}
+              name={"size"}
+              placeholder={"Free or 32,34,36"}
+              value={product?.size}
+              onChange={handleChange}
+            />
           </div>
+
+          {/* Brand and Warranty  */}
+          <div className="flex items-start justify-between gap-4">
+            {/* Brand Input  */}
+            <FormInput
+              label={"Brand"}
+              name={"brand"}
+              placeholder={"Gucci"}
+              value={product?.brand}
+              onChange={handleChange}
+            />
+            {/* Warranty Input  */}
+            <FormInput
+              label={"Warranty"}
+              name={"warranty"}
+              placeholder={"6 months"}
+              value={product?.warranty}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Image Input  */}
+          <ImageSelector
+            images={images}
+            setImages={setImages}
+            imageFiles={imageFiles}
+            setImageFiles={setImageFiles}
+          />
+
           {/* Buttons  */}
           <div className="flex items-center justify-start gap-2">
             <Button className={"btn btn-outline m-0 my-5"}>Cancle</Button>
-            <Button type="submit" className={"btn btn-fill m-0 my-5"}>
-              Submit
+            <Button
+              type="submit"
+              className={`btn btn-fill m-0 my-5 ${
+                isLoading ? "bg-retro/50" : "bg-retro"
+              } `}
+              disabled={isLoading}
+            >
+              {isLoading ? "Submitting..." : "Submit"}
             </Button>
           </div>
         </form>

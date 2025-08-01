@@ -3,19 +3,43 @@ const { default: mongoose, model } = require("mongoose");
 // Product Schema
 const productSchema = new mongoose.Schema({
   title: String,
+
   description: String,
-  category: String,
+
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SubCategory",
+    required: true,
+  },
+
+  subCategory_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
+
   stock: Number,
+
   regularPrice: Number,
+
   discountPrice: Number,
-  image: String,
+
+  images: [String],
+
   sku: String,
+
+  size: String,
+
+  brand: String,
+
+  warranty: String,
+
   status: {
     type: String,
     enum: ["In stock", "Upcoming", "Sold out"],
     default: "In stock",
   },
-  author: mongoose.Schema.ObjectId,
+
 });
 
 // Product Model
