@@ -57,7 +57,6 @@ export function AdminSidebar() {
     isMobile,
     toggleSidebar,
   } = useSidebar();
-  console.log(isMobile);
 
   return (
     <Sidebar variant="floating" collapsible="icon" className={"top-16 sticky "}>

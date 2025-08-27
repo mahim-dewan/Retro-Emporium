@@ -12,6 +12,6 @@ export const imageUploader = async (images) => {
   });
 
   const results = await Promise.all(uploadImages);
-  
+
   return results;
 };

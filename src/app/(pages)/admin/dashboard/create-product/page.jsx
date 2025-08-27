@@ -14,8 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   useCreateProductMutation,
-  useGetCategoryQuery,
-  useGetSubCategoryQuery,
+  useGetCategoriesQuery,
+  useGetSubCategoriesQuery,
 } from "@/features/api/apiSlice";
 import { imageUploader } from "@/utils/imageUpload";
 import FormInput from "@/components/utils/FormInput";
@@ -39,12 +39,12 @@ const defaultProductState = {
 };
 
 const AddProduct = () => {
-  const [images, setImages] = useState([]); // images local link for show selected images in form
+  const [previewImages, setPreviewImages] = useState([]); // images local link for show selected images in form
   const [product, setProduct] = useState(defaultProductState);
   const [isLoading, setIsLoading] = useState(false);
   const [imageFiles, setImageFiles] = useState([]); // Image files for upload in cloudinary
-  const { data: categories } = useGetCategoryQuery();
-  const { data: subCategories } = useGetSubCategoryQuery();
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: subCategories } = useGetSubCategoriesQuery();
   const [createProduct, { data }] = useCreateProductMutation();
 
   // Filter sub-categories
@@ -69,7 +69,7 @@ const AddProduct = () => {
 
       // Reset
       setProduct(defaultProductState);
-      setImages([]);
+      setPreviewImages([]);
       setImageFiles([]);
     } catch (err) {
       toast.error(err?.message || "Something went wrong");
@@ -256,15 +256,27 @@ const AddProduct = () => {
 
           {/* Image Input  */}
           <ImageSelector
-            images={images}
-            setImages={setImages}
+            productData={setProduct}
+            previewImages={previewImages}
+            setPreviewImages={setPreviewImages}
             imageFiles={imageFiles}
             setImageFiles={setImageFiles}
           />
 
           {/* Buttons  */}
           <div className="flex items-center justify-start gap-2">
-            <Button className={"btn btn-outline m-0 my-5"}>Cancle</Button>
+            <Button
+              type="reset"
+              onClick={() => {
+                setProduct(defaultProductState);
+                setPreviewImages([]);
+                setImageFiles([]);
+              }}
+              className={"btn btn-outline m-0 my-5"}
+            >
+              Clear
+            </Button>
+
             <Button
               type="submit"
               className={`btn btn-fill m-0 my-5 ${
@@ -272,7 +284,7 @@ const AddProduct = () => {
               } `}
               disabled={isLoading}
             >
-              {isLoading ? "Submitting..." : "Submit"}
+              {isLoading ? "Creating..." : "Create"}
             </Button>
           </div>
         </form>

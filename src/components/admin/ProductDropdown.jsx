@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,8 +19,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
+import { useEditModalContext } from "@/context/EditFormModalContext";
+import { useDeleteProductMutation } from "@/features/api/apiSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const ProductDropdown = () => {
+const ProductDropdown = ({ product }) => {
+  const router = useRouter()
+  const { editMode, setEditMode, setSelectedProduct } = useEditModalContext();
+  const [deleteProduct, { data }] = useDeleteProductMutation();
+
+  const handleDelete = () => {
+    deleteProduct(product?._id);
+    toast.warn(data?.message || "Product Deleted");
+    router.refresh()
+  };
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
@@ -68,13 +83,26 @@ const ProductDropdown = () => {
         </div>
 
         {/* Edit button  */}
-        <DropdownMenuItem className={"py-0 hover:bg-gray-300 cursor-pointer"}>
-          <Button className={"shadow-none p-0"}>Edit</Button>
+        <DropdownMenuItem
+          className={
+            "py-0 hover:bg-gray-300 shadow-none p-2 font-semibold cursor-pointer"
+          }
+          onClick={() => {
+            setSelectedProduct(product);
+            setEditMode(true);
+          }}
+        >
+          Edit
         </DropdownMenuItem>
 
         {/* Delete button  */}
-        <DropdownMenuItem className={"py-0 hover:bg-gray-300 cursor-pointer"}>
-          <Button className={"shadow-none p-0 text-retro"}>Delete</Button>
+        <DropdownMenuItem
+          className={
+            "py-0 hover:bg-gray-300 shadow-none p-2 font-semibold text-retro cursor-pointer"
+          }
+          onClick={handleDelete}
+        >
+          Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

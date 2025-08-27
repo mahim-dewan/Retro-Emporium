@@ -1,8 +1,8 @@
-import { getAllCategory } from "@/lib/api";
+import { getAllCategories } from "@/lib/api";
 import Link from "next/link";
 
 const CategoryMenuList = async () => {
-  const categories = await getAllCategory();
+  const categories = await getAllCategories();
 
   return (
     <div className="flex flex-wrap items-center gap-3 p-2 bg-dark/60 text-white justify-start xl:justify-center">

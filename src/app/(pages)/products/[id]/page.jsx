@@ -14,7 +14,10 @@ import Button from "@/components/utils/Button";
 import DeliverySlide from "@/components/product/DeliverySlide";
 import ProductTabDescription from "@/components/product/ProductTabDescription";
 import RelatedProducts from "@/components/product/RelatedProducts";
-import { useGetProductByIDQuery } from "@/features/api/apiSlice";
+import {
+  useGetCategoryQuery,
+  useGetProductByIDQuery,
+} from "@/features/api/apiSlice";
 
 const ProductDetails = ({ children, params }) => {
   const [activeImage, setActiveImage] = useState();
@@ -27,6 +30,9 @@ const ProductDetails = ({ children, params }) => {
     error,
   } = useGetProductByIDQuery(id);
 
+  const { data: category } = useGetCategoryQuery(product?.category_id, {
+    skip: !product?.category_id,
+  });
 
   useEffect(() => {
     if (!isLoading && isSuccess) {
@@ -74,7 +80,7 @@ const ProductDetails = ({ children, params }) => {
             <h2 className="title text-start text-dark">{product?.title}</h2>
             <div className="border-b border-gray-300 pb-5">
               {product?.sku && <p>SKU : {product?.sku}</p>}
-              <p>Category: {product?.category}</p>
+              {category?.name && <p>Category: {category?.name}</p>}
               <p>sold: 20</p>
               {product?.size && <p>size: {product?.size}</p>}
             </div>

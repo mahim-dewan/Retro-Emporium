@@ -3,15 +3,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-import { getAllCategory } from "@/lib/api";
-import { useGetSubCategoryQuery } from "@/features/api/apiSlice";
+import { useGetCategoriesQuery } from "@/features/api/apiSlice";
 
 const PRoductNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [arrow, setArrow] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { data: subCategories } = useGetSubCategoryQuery();
+  const { data: subCategories } = useGetCategoriesQuery();
 
   return (
     <nav

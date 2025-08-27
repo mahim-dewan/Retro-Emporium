@@ -1,10 +1,11 @@
-import { getJustForYouProducts } from "@/lib/api";
+import { allProducts } from "@/lib/api";
 import React from "react";
 import ProductCard from "./ProductCard";
 import PaginationBox from "./PaginationBox";
 
-const AllProducts = async () => {
-  const { products, totalPages } = await getJustForYouProducts();
+const AllProducts = async ({ searchParams }) => {
+  const page = parseInt(searchParams?.page) || 1; // Get page for pagination
+  const { products, totalPages } = await allProducts({ page }); // Get Products by pagination
 
   return (
     <div className="w-full">

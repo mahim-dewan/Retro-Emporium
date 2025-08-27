@@ -5,11 +5,18 @@ const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_BASE_API}`,
   }),
+  tagTypes: ["products"],
   endpoints: (builder) => ({
     // *********************** PRODUCT ********************
 
+    getProducts: builder.query({
+      query: () => `/products`,
+      providesTags: ["products"],
+    }),
+
     getProductByID: builder.query({
       query: (id) => `/products/${id}`,
+      providesTags: (result, error, id) => [{ type: "products", id }],
     }),
 
     filteredProducts: builder.query({
@@ -19,19 +26,44 @@ const apiSlice = createApi({
 
     createProduct: builder.mutation({
       query: (data) => ({
-        url: "products",
+        url: "/products",
         method: "POST",
         body: JSON.stringify(data),
       }),
+      invalidatesTags: ["products"],
+    }),
+
+    updateProduct: builder.mutation({
+      query: (data) => ({
+        url: "/products",
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: "products", id },
+        "products",
+      ],
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: "/products",
+        method: "DELETE",
+        body: JSON.stringify(id),
+      }),
+      invalidatesTags: ["products"],
     }),
 
     // *********************** Category ********************
+    getCategories: builder.query({
+      query: () => "/categories/getCategories",
+    }),
     getCategory: builder.query({
-      query: () => "/categories/getCategory",
+      query: (id) => `/categories/getCategories/${id}`,
     }),
 
-    getSubCategory: builder.query({
-      query: () => `/categories/getSubCategory/`,
+    getSubCategories: builder.query({
+      query: () => `/categories/getSubCategories/`,
     }),
 
     // *********************** Authentication ********************
@@ -64,11 +96,15 @@ const apiSlice = createApi({
 });
 
 export const {
+  useGetProductsQuery,
   useGetProductByIDQuery,
   useFilteredProductsQuery,
   useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+  useGetCategoriesQuery,
   useGetCategoryQuery,
-  useGetSubCategoryQuery,
+  useGetSubCategoriesQuery,
   useCreateUserMutation,
   useEmailVerifyMutation,
   useResendOTPMutation,

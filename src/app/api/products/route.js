@@ -2,6 +2,7 @@ import connectDB from "@/lib/db";
 import Product from "@/models/product.model";
 import { NextResponse } from "next/server";
 
+// Get Products
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -21,6 +22,7 @@ export async function GET(req) {
 
     // Pagination
     const page = parseInt(searchParams.get("page") || 1);
+
     const limit = 20;
     const skip = (page - 1) * limit;
     // Database Connect
@@ -38,6 +40,7 @@ export async function GET(req) {
   }
 }
 
+// Create a new Product
 export async function POST(req) {
   await connectDB(); // connect to MongoDB
 
@@ -57,5 +60,51 @@ export async function POST(req) {
       { error: err?.message || "Failed to create product" },
       { status: 500 }
     );
+  }
+}
+
+// Update a product
+export async function PUT(req) {
+  await connectDB(); // Database connect
+  try {
+    const updatedProduct = await req.json(); // product obj from frontend
+
+    const result = await Product.findByIdAndUpdate(
+      { _id: updatedProduct._id },
+      updatedProduct
+    );
+
+    if (!result)
+      return NextResponse.json(
+        { message: "Failed to update" },
+        { status: 204 }
+      );
+
+    return NextResponse.json({
+      message: "Updated successfully",
+      product: result,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      {
+        message: err?.message || "Something went wrong",
+      },
+      { status: 400 }
+    );
+  }
+}
+
+// Delete a Product
+export async function DELETE(req) {
+  try {
+    const id = await req.json();
+    const result = await Product.findByIdAndDelete(id);
+    console.log(result);
+
+    return NextResponse.json({ message: "Product Deleted" });
+  } catch (err) {
+    return NextResponse.json({
+      message: err?.message || "Something went wrong",
+    });
   }
 }

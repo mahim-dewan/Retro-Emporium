@@ -9,6 +9,7 @@ import BottomNav from "@/components/header/BottomNav";
 import ProviderWrapper from "./providers/ProviderWrapper";
 import AuthProvider from "./providers/authProvider";
 import AuthModalsProvider from "@/context/authModalsContext";
+import ProductEditForm from "@/components/admin/ProductEditForm";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,24 +39,24 @@ export default async function RootLayout({ children }) {
         <ProviderWrapper>
           <AuthProvider>
             <AuthModalsProvider>
-              {/* Login Form  */}
-              <LoginForm
-                className={
-                  "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                }
-              />
-              {/* Register Form  */}
-              <RegisterForm
-                className={
-                  "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                }
-              />
-              <Header />
-              <main className="max-w-[1500px] mx-auto shadow-xl">
-                {children}
+                {/* Login Form  */}
+                <LoginForm
+                  className={
+                    "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                  }
+                />
+                {/* Register Form  */}
+                <RegisterForm
+                  className={
+                    "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                  }
+                />
+                <Header />
+                <main className="max-w-[1500px] mx-auto shadow-xl">
+                  {children}
 
-                <ToastContainer autoClose={2000} position="top-right" />
-              </main>
+                  <ToastContainer autoClose={2000} position="top-right" />
+                </main>
               {/* Bottom Navbar  */}
               <div className="fixed bottom-0 w-full md:hidden">
                 <BottomNav />

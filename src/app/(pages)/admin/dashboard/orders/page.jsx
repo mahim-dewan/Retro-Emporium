@@ -1,9 +1,12 @@
-import React from 'react'
+import ProductEditForm from "@/components/admin/ProductEditForm";
+import React from "react";
 
 const Orders = () => {
   return (
-    <div>Orders</div>
-  )
-}
+    <div>
+      Orders
+    </div>
+  );
+};
 
-export default Orders
+export default Orders;

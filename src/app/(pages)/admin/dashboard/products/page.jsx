@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import React, { Suspense } from "react";
-import { HiDotsVertical } from "react-icons/hi";
 import {
   Table,
   TableBody,
@@ -22,27 +21,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import PaginationBox from "@/components/product/PaginationBox";
+import { allProducts, getAllCategories } from "@/lib/api";
+import Link from "next/link";
 
-const product = {
-  status: "In stock",
-  _id: "6855a86db5438d4e05e290bd",
-  sku: "BEM-6505",
-  name: "Duracell - AA 1.5V CopperTop Batteries (4-Pack)",
-  type: "HardGood",
-  price: 5.49,
-  upc: "041333415017",
-  category: "Fashion",
-  shipping: 5.49,
-  description:
-    "Long-lasting energy; DURALOCK Power Preserve technology; for toys, clocks, radios, games, remotes, PDAs and more",
-  manufacturer: "Duracell",
-  model: "MN1500B4Z",
-  url: "http://www.bestbuy.com/site/duracell-aa-1-5v-coppertop-batteries-4-pack/48530.p?id=1099385268988&skuId=48530&cmp=RMXCC",
-  image:
-    "http://img.bbystatic.com/BestBuy_US/images/products/4853/48530_sa.jpg",
-};
+const AdminProducts = async ({ searchParams }) => {
+  const page = parseInt(searchParams?.page) || 1;
+  const { products, totalPages } = await allProducts({ page });
+  const categories = await getAllCategories();
 
-const AdminProducts = () => {
   return (
     <div className="box-shadow w-full m-0">
       <div className=" flex items-center justify-between ">
@@ -110,23 +96,26 @@ const AdminProducts = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 5 }).map((_, i) => (
+          {products?.map((product, i) => (
             <TableRow className={"border-gray-300"} key={i}>
               {/* Image  */}
               <TableCell className="font-medium w-20">
-                <Image
-                  src={product.image}
-                  alt="image"
-                  width={1000}
-                  height={1000}
-                  className="w-16 h-16 rounded-lg"
-                />
+                <Link href={`/products/${product?._id}`}>
+                  <Image
+                    src={product.images[0]}
+                    alt="image"
+                    width={1000}
+                    height={1000}
+                    className="w-16 h-16 rounded-lg"
+                  />
+                </Link>
               </TableCell>
               {/* Title  */}
               <TableCell className={"w-1/3 whitespace-normal"}>
-                {product.name}
+                <Link href={`/products/${product?._id}`}>{product?.title}</Link>
               </TableCell>
-              {/* Status  */}
+
+              {/* Status for desktop  */}
               <TableCell
                 className={"text-center w-0 m-0 p-0 hidden lg:table-cell"}
               >
@@ -158,19 +147,22 @@ const AdminProducts = () => {
                   </SelectContent>
                 </Select>
               </TableCell>
+
               {/* Category  */}
               <TableCell className={"text-center hidden lg:table-cell"}>
-                {product.category}
+                {categories?.find(
+                  (category) => category._id === product.category_id
+                )?.name || "N/A"}{" "}
               </TableCell>
               {/* SKU  */}
               <TableCell className={"text-center"}>{product.sku}</TableCell>
               {/* Price  */}
               <TableCell className={"text-center"}>
-                {product.price} tk
+                {product.discountPrice || product.regularPrice}tk
               </TableCell>
               {/* 3dot menu  */}
               <TableCell className="text-right">
-                <ProductDropdown />
+                <ProductDropdown product={product} />
               </TableCell>
             </TableRow>
           ))}
@@ -178,7 +170,7 @@ const AdminProducts = () => {
       </Table>
 
       <Suspense fallback={<div>Loading...</div>}>
-        <PaginationBox totalPages={5} />
+        <PaginationBox totalPages={totalPages} />
       </Suspense>
     </div>
   );

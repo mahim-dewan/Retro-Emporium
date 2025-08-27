@@ -10,12 +10,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { IoIosArrowDown } from "react-icons/io";
-import { getAllCategory } from "@/lib/api";
 import Link from "next/link";
-import { useGetCategoryQuery } from "@/features/api/apiSlice";
+import { useGetCategoriesQuery } from "@/features/api/apiSlice";
 
 const CategorySlidebar = () => {
-  const { data: categories } = useGetCategoryQuery();
+  const { data: categories } = useGetCategoriesQuery();
 
   return (
     <Sheet>

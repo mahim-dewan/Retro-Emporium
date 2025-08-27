@@ -3,12 +3,12 @@ import React from "react";
 import Link from "next/link";
 import Button from "../utils/Button";
 import { FaPlus } from "react-icons/fa";
-import { getAllCategory } from "@/lib/api";
+import { getAllCategories } from "@/lib/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 
 const CategoryFeature = async () => {
-  const categories = await getAllCategory();
+  const categories = await getAllCategories();
   const session = await getServerSession(authOptions);
   const user = session?.user || null;
 
