@@ -1,7 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/Sidebar";
+import ProductEditForm from "@/components/admin/ProductEditForm";
+import EditFormWrapper from "@/app/providers/EditFormProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +32,13 @@ export default function RootLayout({ children }) {
       >
         <SidebarProvider>
           <AdminSidebar />
-          <main className="max-w-[1500px] mx-auto">{children}</main>
+          <EditFormWrapper>
+            <ProductEditForm />
+            <div className="flex-1 my-2 px-2">{children}</div>
+          </EditFormWrapper>
         </SidebarProvider>
       </body>
     </html>
   );
 }
+ 

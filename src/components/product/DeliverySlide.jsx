@@ -123,7 +123,7 @@ const DeliverySlide = () => {
           </SheetHeader>
         </SheetContent>
       </Sheet>
-    </div>
+    </div> 
   );
 };
 

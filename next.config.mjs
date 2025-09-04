@@ -8,6 +8,7 @@ const nextConfig = {
       "img.bbystatic.com",
       "source.unsplash.com",
       "i.ibb.co",
+      "res.cloudinary.com"
     ],
   },
 };

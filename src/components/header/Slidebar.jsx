@@ -8,11 +8,37 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { useAuthModalsContext } from "@/context/authModalsContext";
 import { signOut, useSession } from "next-auth/react";
 
+// Admin Routes List
+const adminRoutes = [
+  {
+    name: "Dashboard",
+    url: "/admin/dashboard",
+  },
+  {
+    name: "Orders",
+    url: "/admin/dashboard/orders",
+  },
+  {
+    name: "Customers",
+    url: "/admin/dashboard/customers",
+  },
+  {
+    name: "Products List",
+    url: "/admin/dashboard/products",
+  },
+
+  {
+    name: "Create Product",
+    url: "/admin/dashboard/create-product",
+  },
+];
+
 const Slidebar = ({ setOpenSlidebar }) => {
   const pathname = usePathname();
   const { setOpenRegisterForm, setOpenLoginForm } = useAuthModalsContext();
   const { data: user } = useSession();
   const router = useRouter();
+  const userRole = user?.user?.role;
 
   // Log out handler
   const handleLogOut = async () => {
@@ -35,30 +61,49 @@ const Slidebar = ({ setOpenSlidebar }) => {
         <Link
           href={"/"}
           onClick={() => setOpenSlidebar(false)}
-          className={`text-xl font-semibold my-2 m-5 ${
+          className={`font-semibold my-2 m-5 ${
             pathname === "/" && "active-btn"
           }`}
         >
           Home
         </Link>
-        <Link
-          href={"/products"}
-          onClick={() => setOpenSlidebar(false)}
-          className={`text-xl font-semibold my-2 m-5 ${
-            pathname === "/products" && "active-btn"
-          }`}
-        >
-          Products
-        </Link>
-        <Link
-          href={"/contact"}
-          onClick={() => setOpenSlidebar(false)}
-          className={`text-xl font-semibold my-2 m-5 ${
-            pathname === "/contact" && "active-btn"
-          }`}
-        >
-          Contact
-        </Link>
+        {user && userRole === "admin" ? (
+          <>
+            {adminRoutes.map((route) => (
+              <Link
+                key={route.name}
+                href={route.url}
+                onClick={() => setOpenSlidebar(false)}
+                className={`font-semibold my-2 m-5 ${
+                  pathname === `${route.url}` && "active-btn"
+                }`}
+              >
+                {route.name}
+              </Link>
+            ))}
+          </>
+        ) : (
+          <>
+            <Link
+              href={"/products"}
+              onClick={() => setOpenSlidebar(false)}
+              className={`font-semibold my-2 m-5 ${
+                pathname === "/products" && "active-btn"
+              }`}
+            >
+              Products
+            </Link>
+            <Link
+              href={"/contact"}
+              onClick={() => setOpenSlidebar(false)}
+              className={`font-semibold my-2 m-5 ${
+                pathname === "/contact" && "active-btn"
+              }`}
+            >
+              Contact
+            </Link>
+          </>
+        )}
       </div>
       {/* Login and Register Button  */}
       {user?.user ? (
@@ -73,7 +118,7 @@ const Slidebar = ({ setOpenSlidebar }) => {
       ) : (
         <div className="flex flex-col items-start">
           <Button
-            className="btn-outline"
+            className="btn-outline-gradient"
             handler={() => {
               setOpenSlidebar(false);
               setOpenLoginForm(true);
@@ -82,13 +127,13 @@ const Slidebar = ({ setOpenSlidebar }) => {
             Login
           </Button>
           <Button
-            className="btn-fill text-white"
+            className="btn-fill-gradient text-white"
             handler={() => {
               setOpenSlidebar(false);
               setOpenRegisterForm(true);
             }}
           >
-            Resister
+            Register
           </Button>
         </div>
       )}

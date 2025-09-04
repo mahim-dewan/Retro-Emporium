@@ -6,7 +6,7 @@ import paymentMethods from "../../public/paymentMethods.png";
 import CategoryMenuList from "@/components/product/CategoryMenuList";
 import JustForYouProducts from "@/components/product/JustForYouProducts";
 
-export default async function Home() {
+export default function Home() {
   return (
     <div>
       {/* Category menu  */}
@@ -15,24 +15,26 @@ export default async function Home() {
       </div>
 
       {/* Hero area  */}
-      <div>
-        <HeroSection />
-      </div>
+      <HeroSection />
 
       {/* Category Features  */}
       <CategoryFeature />
 
       {/* Products  */}
-      <div className="mt-10">
-        <h1 className="title">Just for you</h1>
-        <p className="text-center mx-4 mb-10">
-          Check & Get Your Desired Product!
-        </p>
+      <Suspense
+        fallback={
+          <div className="mx-auto my-10 text-2xl">Loading..........</div>
+        }
+      >
+        <div className="mt-10">
+          <h1 className="title">Just for you</h1>
+          <p className="text-center mx-4 mb-10">
+            Check & Get Your Desired Product!
+          </p>
 
-        <Suspense fallback={<div>Loading..........</div>}>
           <JustForYouProducts />
-        </Suspense>
-      </div>
+        </div>
+      </Suspense>
 
       {/* Payment methods  */}
       <div className="p-5 bg-gray-200 my-10">

@@ -1,4 +1,3 @@
-import Pagination from "@/components/product/PaginationBox";
 import ProductCard from "@/components/product/ProductCard";
 import { getJustForYouProducts } from "@/lib/api";
 import Link from "next/link";
@@ -13,7 +12,6 @@ const JustForYouProducts = async () => {
           <ProductCard key={product._id} product={product} />
         ))}
       </div>
-      {/* <Pagination totalPages={data?.totalPages} currentPage={page} /> */}
       <Link
         href={"products"}
         className="title text-base w-fit mx-auto underline my-5"

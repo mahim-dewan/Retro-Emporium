@@ -1,30 +1,38 @@
 "use client";
+
 import Image from "next/image";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GiShoppingCart } from "react-icons/gi";
 import { FaTruckArrowRight } from "react-icons/fa6";
 import { FaMapMarkerAlt, FaTruck, FaMoneyBillAlt } from "react-icons/fa";
 import { MdOutlineGppBad } from "react-icons/md";
+
+// Assets
 import Bkash from "../../../../../public/Bkash.jpg";
 import Nagad from "../../../../../public/nagad.jpg";
 import Mastercard from "../../../../../public/mastercard.jpg";
 import Visa from "../../../../../public/visa.jpg";
+
+// Components
 import Quantity from "@/components/product/Quantity";
 import Button from "@/components/utils/Button";
 import DeliverySlide from "@/components/product/DeliverySlide";
 import ProductTabDescription from "@/components/product/ProductTabDescription";
 import RelatedProducts from "@/components/product/RelatedProducts";
-import { useGetProductByIDQuery } from "@/features/api/apiSlice";
 
-const images = [
-  "http://img.bbystatic.com/BestBuy_US/images/products/3331/333179_sa.jpg",
-  "http://img.bbystatic.com/BestBuy_US/images/products/1501/150115_sa.jpg",
-  "http://img.bbystatic.com/BestBuy_US/images/products/9852/9852688_sa.jpg",
-  "http://img.bbystatic.com/BestBuy_US/images/products/3122/312290_sa.jpg",
-];
-const ProductDetails = ({ children, params }) => {
-  const [activeImage, setActiveImage] = useState();
-  const { id } = use(params);
+// API
+import {
+  useGetCategoryQuery,
+  useGetProductByIDQuery,
+} from "@/features/api/apiSlice";
+
+const ProductDetails = ({ params }) => {
+  const { id } = params;
+  const [activeImage, setActiveImage] = useState(null);
+
+  const paymentImages = [Bkash, Nagad, Mastercard, Visa];
+
+  // Product Query
   const {
     data: product,
     isError,
@@ -33,11 +41,36 @@ const ProductDetails = ({ children, params }) => {
     error,
   } = useGetProductByIDQuery(id);
 
+  // Category Query (skip if product not ready)
+  const { data: category } = useGetCategoryQuery(product?.category_id, {
+    skip: !product?.category_id,
+  });
+
+  // Set active image when product loads
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      setActiveImage(product?.image);
+    if (isSuccess && product?.images?.length > 0) {
+      setActiveImage(product?.images[0]);
     }
-  }, [product]);
+  }, [isSuccess, product]);
+
+  // Handle loading state
+  if (isLoading) return <p className="text-center py-10 min-h-screen">Loading product...</p>;
+  if (isError)
+    return (
+      <p className="text-center py-10 text-red-600 min-h-screen">
+        {error?.message || "Failed to load product."}
+      </p>
+    );
+
+  // Price & discount calculation
+  const discountPercent =
+    product?.regularPrice && product?.discountPrice
+      ? Math.round(
+          ((product.regularPrice - product.discountPrice) /
+            product.regularPrice) *
+            100
+        )
+      : 0;
 
   return (
     <div className="min-h-screen">
@@ -45,27 +78,32 @@ const ProductDetails = ({ children, params }) => {
         {/* Product Details  */}
         <div className="max-w-[400px] md:max-w-full mx-auto md:flex justify-center items-start gap-6 w-full">
           {/* Product Image (Left side)  */}
-          <div className="md:w-[500px] flex-1/2">
+          <div className="md:w-[500px]">
             <Image
-              alt="title"
+              alt="product image"
               src={activeImage}
-              width={1000}
-              height={1000}
-              className="w-full md:w-[500px] h-[400px] bg-white border-2 border-retro rounded-md"
+              width={4000}
+              height={3000}
+              className="w-full md:w-[500px] h-[400px] bg-white border-2 object-cover border-retro rounded-md"
               quality={100}
+              unoptimized
             />
-            {/* all images  */}
-            <div className="my-2 flex">
-              {images.map((image) => (
+
+            {/* Thumbnails */}
+            <div className="my-2 flex flex-wrap gap-2">
+              {product?.images.map((image, i) => (
                 <Image
+                  key={i}
                   alt="title"
                   src={image}
-                  width={1000}
-                  height={1000}
-                  className={`w-20 h-20 bg-white p-2  ${
-                    image === activeImage && "border border-retro rounded-md"
+                  width={400}
+                  height={300}
+                  className={`w-20 h-20 object-cover bg-white p-1 overflow-hidden rounded-xl  ${
+                    image === activeImage && "border border-retro "
                   }`}
                   onClick={() => setActiveImage(image)}
+                  quality={100}
+                  unoptimized
                 />
               ))}
             </div>
@@ -73,26 +111,38 @@ const ProductDetails = ({ children, params }) => {
 
           {/* Product Details (Right side) */}
           <div className="flex-1/2">
-            <h2 className="title text-start text-dark">{product?.name}</h2>
+            <h2 className="title text-start text-dark">{product?.title}</h2>
+
             <div className="border-b border-gray-300 pb-5">
-              <p>SKU : {product?.sku}</p>
-              <p>Category: {product?.category}</p>
-              <p>sold: 20</p>
-              <p>size: Free</p>
+              {product?.sku && <p>SKU : {product?.sku}</p>}
+              {category?.name && <p>Category: {category?.name}</p>}
+              {product?.sold && <p>sold: {product?.sold}</p>}
+              {product?.size && <p>size: {product?.size}</p>}
             </div>
+
+            {/* Price  */}
             <div className="flex items-center justify-between pt-5">
               <h3>
-                <span className="text-2xl font-bold">TK {product?.price} </span>
-                <span className="text-sm line-through">TK 1250</span>
+                <span className="text-2xl font-bold">
+                  TK {product?.discountPrice}{" "}
+                </span>
+                {product?.regularPrice && (
+                  <span className="text-sm line-through text-gray-500">
+                    TK {product?.regularPrice}
+                  </span>
+                )}
               </h3>
-              <p className="text-retro font-semibold">33% Off</p>
+
+              {discountPercent > 0 && (
+                <p className="text-retro font-semibold">
+                  {discountPercent}% Off
+                </p>
+              )}
             </div>
 
+            {/* Quantity + Actions */}
             <div className="flex justify-center items-start gap-2">
-              {/* Quantity  */}
               <Quantity />
-
-              {/* cart and order button  */}
               <div className=" box-shadow flex flex-col items-center flex-2 md:m-0">
                 <Button
                   className={
@@ -172,34 +222,16 @@ const ProductDetails = ({ children, params }) => {
 
               {/* Payment Methods */}
               <div className="flex gap-2 flex-wrap items-center">
-                <Image
-                  src={Bkash}
-                  alt="bKash"
-                  className="w-16 h-12"
-                  width={1000}
-                  height={1000}
-                />
-                <Image
-                  src={Nagad}
-                  alt="bKash"
-                  className="w-16 h-12"
-                  width={1000}
-                  height={1000}
-                />
-                <Image
-                  src={Mastercard}
-                  alt="bKash"
-                  className="w-16 h-12"
-                  width={1000}
-                  height={1000}
-                />
-                <Image
-                  src={Visa}
-                  alt="bKash"
-                  className="w-16 h-12"
-                  width={1000}
-                  height={1000}
-                />
+                {paymentImages?.map((img, i) => (
+                  <Image
+                    key={i}
+                    src={img}
+                    alt="bKash"
+                    className="w-16 h-12"
+                    width={1000}
+                    height={1000}
+                  />
+                ))}
               </div>
             </div>
 
@@ -218,6 +250,8 @@ const ProductDetails = ({ children, params }) => {
           </div>
         </div>
       </div>
+
+      {/* Description + Related */}
       <ProductTabDescription description={product?.description} />
       <RelatedProducts product={product} />
     </div>
