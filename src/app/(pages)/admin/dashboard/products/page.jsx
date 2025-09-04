@@ -103,7 +103,7 @@ const AdminProducts = async ({ searchParams }) => {
                 <Link href={`/products/${product?._id}`}>
                   <Image
                     src={product.images[0]}
-                    alt="image"
+                    alt={product.title || "Product image"}
                     width={1000}
                     height={1000}
                     className="w-16 h-16 rounded-lg"

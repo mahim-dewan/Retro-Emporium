@@ -19,14 +19,20 @@ const Verify = () => {
   const [otp, setOtp] = useState("");
   const [secondLeft, setSecondLeft] = useState(120);
   const [email, setEmail] = useState("");
+
   const { setOpenLoginForm } = useAuthModalsContext();
   const router = useRouter();
+
   const [emailVerify, { data, isError, isLoading, isSuccess }] =
     useEmailVerifyMutation();
   const [resendOTP] = useResendOTPMutation();
 
-  // Verify submit button
+  // Verify OTP handler
   const handleVerify = async () => {
+    if (otp.length !== 6) {
+      return toast.warn("Please enter a 6-digit OTP");
+    }
+
     try {
       const res = await emailVerify({ email, otp });
 
@@ -53,6 +59,7 @@ const Verify = () => {
     }
   };
 
+  // Timer
   useEffect(() => {
     // If email isn't available
     if (!sessionStorage.getItem("registerEmail")) return router.replace("/");
@@ -68,7 +75,7 @@ const Verify = () => {
     return () => clearInterval(timer);
   }, [secondLeft]);
 
-  // make time format
+  // Format the time
   const timeFormat = (second) => {
     let m = Math.floor(second / 60);
     let s = second % 60;
@@ -80,12 +87,14 @@ const Verify = () => {
     <div className="min-h-screen">
       <div className="w-7/8 max-w-[500px] md:w-[500px] bg-pastel-olive p-4 m-4 mx-auto rounded-lg">
         <h1 className="title text-dark">OTP Verification</h1>
+
         <p className="text-dark my-5">
           Please check your email :{" "}
           <span className="bg-retro px-1 text-white font-bold">{email}</span>{" "}
           and enter the OTP sent to your registered email to complete your
           verification.
         </p>
+
         <div className="mx-auto my-5">
           <InputOTP maxLength={6} value={otp} onChange={setOtp}>
             <InputOTPGroup>
@@ -121,6 +130,7 @@ const Verify = () => {
               />
             </InputOTPGroup>
           </InputOTP>
+
           <div className="flex items-center justify-between my-3">
             <p>Remaining Time : {timeFormat(secondLeft)} </p>
             <Button
@@ -130,6 +140,7 @@ const Verify = () => {
               Resend
             </Button>
           </div>
+
           <div className="mt-5">
             <Button
               disabled={isLoading}

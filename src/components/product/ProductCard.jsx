@@ -19,9 +19,12 @@ const ProductCard = ({ product }) => {
         <h2 className="text-sm line-clamp-3">{product?.title}</h2>
       </Link>
       <div className="flex justify-between items-center my-2 absolute bottom-0 w-[90%]">
-        <p className="font-semibold">${product?.discountPrice}</p>
+        <div>
+          <p className="font-semibold">{product?.discountPrice} TK</p>
+          <p className="text-gray-700 line-through">${product?.regularPrice} TK</p>
+        </div>
         <Button className={"btn-fill text-sm p-2 m-0 text-white"}>
-          <TiShoppingCart className="text-2xl" />
+          <TiShoppingCart className="text-2xl" aria-label="Add to cart" />
         </Button>
       </div>
     </div>

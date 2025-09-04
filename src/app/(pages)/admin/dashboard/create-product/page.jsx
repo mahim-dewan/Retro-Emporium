@@ -1,8 +1,13 @@
 "use client";
-import { Label } from "@radix-ui/react-dropdown-menu";
+
+// import { Label } from "@radix-ui/react-dropdown-menu";
 import Image from "next/image";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import logo from "../../../../../../public/Retro-logo.png";
+import { Label } from "@/components/ui/label";
+
+// UI Components
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -12,16 +17,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+
+// Utils & Features
 import {
   useCreateProductMutation,
   useGetCategoriesQuery,
   useGetSubCategoriesQuery,
 } from "@/features/api/apiSlice";
 import { imageUploader } from "@/utils/imageUpload";
+import { cleanProductData } from "@/utils/CleanProductData";
+
+// Custom Components
 import FormInput from "@/components/utils/FormInput";
 import ImageSelector from "@/components/utils/ImageSelector";
-import { cleanProductData } from "@/utils/CleanProductData";
-import { toast } from "react-toastify";
 
 // Default Product State
 const defaultProductState = {
@@ -43,6 +51,8 @@ const AddProduct = () => {
   const [product, setProduct] = useState(defaultProductState);
   const [isLoading, setIsLoading] = useState(false);
   const [imageFiles, setImageFiles] = useState([]); // Image files for upload in cloudinary
+
+  // Queries
   const { data: categories } = useGetCategoriesQuery();
   const { data: subCategories } = useGetSubCategoriesQuery();
   const [createProduct, { data }] = useCreateProductMutation();
@@ -52,22 +62,33 @@ const AddProduct = () => {
     (c) => c?.category_id === product?.category_id
   );
 
+  // OnChange Handler
+  const handleChange = (e) => {
+    setProduct({
+      ...product,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // 1. Image Upload
       const results = await imageUploader(imageFiles); // Upload to Cloudinary
       const imageURLs = results.map((result) => result.secure_url);
+
+      // 2. Prepare clean product data
       const newProduct = cleanProductData(product, imageURLs);
 
-      // Await and unwrap the result directly
-      const res = await createProduct(newProduct).unwrap();
+      // 3. Create Product
+      await createProduct(newProduct).unwrap();
 
       toast.success("Product created successfully");
 
-      // Reset
+      // Reset state
       setProduct(defaultProductState);
       setPreviewImages([]);
       setImageFiles([]);
@@ -78,12 +99,11 @@ const AddProduct = () => {
     }
   };
 
-  // OnChange Handler
-  const handleChange = (e) => {
-    setProduct({
-      ...product,
-      [e.target.name]: e.target.value,
-    });
+  /** Handle Reset */
+  const handleReset = () => {
+    setProduct(defaultProductState);
+    setPreviewImages([]);
+    setImageFiles([]);
   };
 
   return (
@@ -108,7 +128,10 @@ const AddProduct = () => {
 
           {/* Description Input */}
           <div>
-            <Label htmlFor="description" className=" font-semibold">
+            <Label
+              htmlFor="description"
+              className=" font-semibold my-1 text-md "
+            >
               Description<span className="text-retro">*</span>
             </Label>
             <Textarea
@@ -121,11 +144,13 @@ const AddProduct = () => {
             />
           </div>
 
-          {/* Category  */}
+          {/* Category & Sub-Category */}
           <div className="md:flex items-start justify-between gap-4">
-            {/* Category  */}
             <div className="flex-1">
-              <Label htmlFor="categories" className=" font-semibold">
+              <Label
+                htmlFor="categories"
+                className=" font-semibold my-1 text-md "
+              >
                 Categories<span className="text-retro">*</span>
               </Label>
               <Select
@@ -156,9 +181,11 @@ const AddProduct = () => {
               </Select>
             </div>
 
-            {/* Sub-Category  */}
             <div className="flex-1">
-              <Label htmlFor="subCategories" className=" font-semibold">
+              <Label
+                htmlFor="subCategories"
+                className=" font-semibold my-1 text-md"
+              >
                 Sub-Categories<span className="text-retro">*</span>
               </Label>
               <Select
@@ -192,7 +219,6 @@ const AddProduct = () => {
 
           {/* Price */}
           <div className="flex items-start justify-between gap-4">
-            {/* regularPrice Input */}
             <FormInput
               label={"Regular Price(tk)"}
               required={true}
@@ -203,7 +229,6 @@ const AddProduct = () => {
               onChange={handleChange}
             />
 
-            {/* DiscountPrice Input  */}
             <FormInput
               label={"Discount Price(tk)"}
               type="number"
@@ -267,11 +292,7 @@ const AddProduct = () => {
           <div className="flex items-center justify-start gap-2">
             <Button
               type="reset"
-              onClick={() => {
-                setProduct(defaultProductState);
-                setPreviewImages([]);
-                setImageFiles([]);
-              }}
+              onClick={handleReset}
               className={"btn btn-outline m-0 my-5"}
             >
               Clear

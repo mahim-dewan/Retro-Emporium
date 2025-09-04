@@ -15,10 +15,11 @@ import { useSearchParams } from "next/navigation";
 
 const PaginationBox = ({ totalPages }) => {
   const searchParams = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") || 1);
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
 
-  // Get Pagination Range
-  const paginationRange = getPaginationRange({ currentPage, totalPages });
+  if (!totalPages || totalPages <= 1) return null; // 🔹 Hide pagination if not needed
+
+  const paginationRange = getPaginationRange({ currentPage, totalPages }); // Get Pagination Range
 
   // JSX from Shadcn ui
   return (

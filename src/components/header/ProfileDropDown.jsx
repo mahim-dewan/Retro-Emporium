@@ -16,7 +16,10 @@ import { useRouter } from "next/navigation";
 export function ProfileDropDown({ children, position }) {
   const router = useRouter();
   const { data } = useSession();
-  const { name, email } = data.user;
+  const name = data?.user?.name;
+  const email = data?.user?.email;
+
+  if (!data?.user) return null;
 
   // Log out handler
   const handleLogOut = async () => {
@@ -66,14 +69,14 @@ export function ProfileDropDown({ children, position }) {
           >
             <Link href={"/profile"}>Profile</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            asChild
-            className={
-              "cursor-pointer  hover:rounded-lg text-md font-semibold hover:shadow-sm shadow-dark"
-            }
-          >
-            <Link href={"/admin/dashboard"}>Dashboard</Link>
-          </DropdownMenuItem>
+          {data?.user?.role === "admin" && (
+            <DropdownMenuItem
+              asChild
+              className="cursor-pointer hover:rounded-lg text-md font-semibold hover:shadow-sm shadow-dark"
+            >
+              <Link href={"/admin/dashboard"}>Dashboard</Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem
             asChild
             className={

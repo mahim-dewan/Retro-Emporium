@@ -18,9 +18,11 @@ const BottomNav = () => {
     <div className="bg-white text-dark border-t border-pastel-olive p-2">
       <div className="flex items-end justify-around">
         <Link href={"/"} className={"flex flex-col items-center text-sm"}>
-          <IoHome size={26} />
+          <IoHome size={26} aria-label="Home" />
           Home
         </Link>
+
+        {/* Conditionally render of user vs admin  */}
         {user?.role === "admin" ? (
           <>
             <Link
@@ -30,6 +32,7 @@ const BottomNav = () => {
               <TbTruckDelivery size={26} />
               Orders
             </Link>
+
             <Link
               href={"/admin/dashboard/create-product"}
               className={"flex flex-col items-center text-sm"}
@@ -41,11 +44,11 @@ const BottomNav = () => {
         ) : (
           <>
             <Button className={"flex flex-col items-center text-sm"}>
-              <MdCategory size={26} />
+              <MdCategory size={26} aria-label="Category" />
               Category
             </Button>
             <Button className={"flex flex-col items-center text-sm"}>
-              <GiShoppingCart size={26} />
+              <GiShoppingCart size={26} aria-label="Cart" />
               Cart
             </Button>
           </>

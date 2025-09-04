@@ -8,7 +8,7 @@ const Products = ({ searchParams }) => {
       <div className="flex flex-col md:flex-row">
         {/* Price Range  */}
         <PriceRange />
-        {/* category={category} setPriceRange={setPriceRange} */}
+        
         <AllProducts searchParams={searchParams} />
       </div>
     </div>

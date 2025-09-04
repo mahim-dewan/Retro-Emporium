@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-dropdown-menu";
+import { Label } from "../ui/label";
 
 const FormInput = ({
   label,
@@ -12,7 +12,7 @@ const FormInput = ({
 }) => {
   return (
     <div className="flex-1">
-      <Label htmlFor={name} className="font-semibold">
+      <Label htmlFor={name} className="font-semibold my-1 text-md">
         {label}
         {required && <span className="text-retro">*</span>}
       </Label>
@@ -29,4 +29,4 @@ const FormInput = ({
   );
 };
 
-export default FormInput
+export default FormInput;

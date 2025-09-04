@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,21 +18,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "../ui/button";
 import { useEditModalContext } from "@/context/EditFormModalContext";
 import { useDeleteProductMutation } from "@/features/api/apiSlice";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const ProductDropdown = ({ product }) => {
-  const router = useRouter()
+  const router = useRouter();
   const { editMode, setEditMode, setSelectedProduct } = useEditModalContext();
   const [deleteProduct, { data }] = useDeleteProductMutation();
 
-  const handleDelete = () => {
-    deleteProduct(product?._id);
-    toast.warn(data?.message || "Product Deleted");
-    router.refresh()
+  const handleDelete = async () => {
+    try {
+      const res = await deleteProduct(product?._id).unwrap();
+      toast.warn(res?.message || "Product deleted successfully");
+      router.refresh();
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to delete product");
+    }
   };
 
   return (
@@ -40,6 +43,7 @@ const ProductDropdown = ({ product }) => {
       <DropdownMenuTrigger>
         <HiDotsVertical className="cursor-pointer" size={20} />
       </DropdownMenuTrigger>
+
       <DropdownMenuContent
         side={"bottom"}
         align={"end"}
@@ -51,6 +55,7 @@ const ProductDropdown = ({ product }) => {
             <SelectTrigger className="w-32 cursor-pointer font-semibold box-shadow border-2 m-0 focus-visible:ring-pastel-olive focus-visible:ring-2">
               <SelectValue placeholder="In stock" />
             </SelectTrigger>
+
             <SelectContent className={"bg-white border-pastel-olive "}>
               <SelectGroup>
                 <DropdownMenuItem>
@@ -61,6 +66,7 @@ const ProductDropdown = ({ product }) => {
                     In Stock
                   </SelectItem>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem>
                   <SelectItem
                     className={"hover:bg-gray-300 cursor-pointer"}
@@ -69,6 +75,7 @@ const ProductDropdown = ({ product }) => {
                     Upcoming
                   </SelectItem>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem>
                   <SelectItem
                     className={"hover:bg-gray-300 cursor-pointer"}

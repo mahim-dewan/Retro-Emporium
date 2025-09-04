@@ -39,6 +39,12 @@ const PriceRange = ({ category, setPriceRange }) => {
   // For Dropdown open and close
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleClear = () => {
+    setSelected(null);
+    setPriceRange({});
+    setIsOpen(false);
+  };
+
   return (
     <div className="w-full md:w-2/6">
       {/* Price Range for Mobile  */}
@@ -69,11 +75,7 @@ const PriceRange = ({ category, setPriceRange }) => {
               <Link
                 href={`/${category}`}
                 className={"text-retro"}
-                onClick={() => {
-                  setSelected(null);
-                  setPriceRange({});
-                  setIsOpen(false);
-                }}
+                onClick={handleClear}
               >
                 Clear
               </Link>
@@ -86,7 +88,8 @@ const PriceRange = ({ category, setPriceRange }) => {
             >
               {priceRanges?.map((range) => (
                 <Link
-                  href={`/${category}?min Price=${range?.min}&max Price=${range?.max}`}
+                  key={range.value}
+                  href={`/${category}?minPrice=${range?.min}&maxPrice=${range?.max}`}
                   onClick={() => {
                     setSelected(range);
                     setPriceRange(range);
@@ -121,11 +124,7 @@ const PriceRange = ({ category, setPriceRange }) => {
         <Link
           href={`/${category}`}
           className={"text-retro hover:underline"}
-          onClick={() => {
-            setSelected(null);
-            setPriceRange({});
-            setIsOpen(false);
-          }}
+          onClick={handleClear}
         >
           Clear All
         </Link>
@@ -140,7 +139,8 @@ const PriceRange = ({ category, setPriceRange }) => {
           <AccordionContent className=" grid grid-cols-2 gap-2">
             {priceRanges.map((range) => (
               <Link
-                href={`/${category}?min Price=${range?.min}&max Price=${range?.max}`}
+                key={range.value}
+                href={`/${category}?minPrice=${range?.min}&maxPrice=${range?.max}`}
                 onClick={() => {
                   setSelected(range);
                   setPriceRange(range);

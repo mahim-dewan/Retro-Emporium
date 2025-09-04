@@ -25,7 +25,7 @@ const Menubar = () => {
               src={
                 "https://images.unsplash.com/photo-1753334479971-573a6e1e0bad?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               }
-              alt="Profile"
+              alt={user?.name || "Profile"}
               className="w-full h-full "
               width={44}
               height={44}
@@ -44,7 +44,7 @@ const Menubar = () => {
             handler={() => setOpenRegisterForm(true)}
             className="btn-fill-gradient text-white"
           >
-            Resister
+            Register
           </Button>
         </div>
       )}

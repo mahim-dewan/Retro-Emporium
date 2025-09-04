@@ -76,7 +76,7 @@ const Header = () => {
       <div
         className={`min-h-full md:hidden z-50 bg-white border-l border-retro fixed top-0 w-1/2 right-0 transition-all duration-300 ease-in-out ${
           !openSlidebar ? "translate-x-96" : "translate-x-0"
-        } `}
+        } `} 
       >
         <Slidebar setOpenSlidebar={setOpenSlidebar} />
       </div>

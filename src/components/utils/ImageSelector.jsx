@@ -14,9 +14,12 @@ const ImageSelector = ({
   const fileInputRef = useRef(null); // Used in image input
 
   const handleSelectImage = (e) => {
-    const file = e.target.files?.[0];
-    setPreviewImages([...previewImages, URL.createObjectURL(file)]); // images local link for show selected images in form
-    setImageFiles([...imageFiles, file]); // Image files for upload in cloudinary
+    const files = Array.from(e.target.files);
+    console.log(files);
+    
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages([...previewImages, ...newPreviews]);
+    setImageFiles([...imageFiles, ...files]);
     fileInputRef.current.value = null;
   };
 
@@ -49,8 +52,8 @@ const ImageSelector = ({
         Select Images<span className="text-retro">*</span>
       </p>
       <div className="my-4 flex items-center justify-start gap-2 flex-wrap">
-        {previewImages?.map((image) => (
-          <div className="relative group">
+        {previewImages?.map((image, index) => (
+          <div className="relative group" key={index}>
             <Image
               src={image}
               alt="image"
@@ -61,14 +64,17 @@ const ImageSelector = ({
             <MdDeleteForever
               onClick={() => handleDelete(image)}
               className="absolute  top-1 right-1 cursor-pointer text-retro bg-white rounded-sm opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
+              aria-label="Delete image"
             />
           </div>
         ))}
+
         <div>
           {/* Hidden File Input */}
           <Input
             id="upload"
             type="file"
+            multiple
             accept="image/*"
             className="hidden"
             ref={fileInputRef}

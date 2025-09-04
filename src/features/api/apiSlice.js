@@ -5,10 +5,10 @@ const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_BASE_API}`,
   }),
-  tagTypes: ["products"],
+  tagTypes: ["products", "categories", "auth"],
+
   endpoints: (builder) => ({
     // *********************** PRODUCT ********************
-
     getProducts: builder.query({
       query: () => `/products`,
       providesTags: ["products"],
@@ -20,15 +20,20 @@ const apiSlice = createApi({
     }),
 
     filteredProducts: builder.query({
-      query: ({ category, minPrice, maxPrice }) =>
-        `/products?category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}`,
+      query: ({ category, min_price, max_price }) => {
+        const params = new URLSearchParams();
+        if (category) params.append("category", category);
+        if (min_price) params.append("min_price", min_price);
+        if (max_price) params.append("max_price", max_price);
+        return `/products?${params.toString()}`;
+      },
     }),
 
     createProduct: builder.mutation({
       query: (data) => ({
         url: "/products",
         method: "POST",
-        body: JSON.stringify(data),
+        body: data,
       }),
       invalidatesTags: ["products"],
     }),
@@ -37,8 +42,9 @@ const apiSlice = createApi({
       query: (data) => ({
         url: "/products",
         method: "PUT",
-        body: JSON.stringify(data),
+        body: data,
       }),
+
       invalidatesTags: (result, error, { id }) => [
         { type: "products", id },
         "products",
@@ -49,9 +55,12 @@ const apiSlice = createApi({
       query: (id) => ({
         url: "/products",
         method: "DELETE",
-        body: JSON.stringify(id),
+        body: id,
       }),
-      invalidatesTags: ["products"],
+      invalidatesTags: (result, error, id) => [
+        { type: "products", id },
+        "products",
+      ],
     }),
 
     // *********************** Category ********************
@@ -71,8 +80,7 @@ const apiSlice = createApi({
       query: (data) => ({
         url: "/auth/register",
         method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify(data),
+        body: data,
       }),
     }),
 
@@ -80,8 +88,7 @@ const apiSlice = createApi({
       query: (data) => ({
         url: "/auth/verify",
         method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify(data),
+        body: data,
       }),
     }),
     resendOTP: builder.mutation({
@@ -89,7 +96,7 @@ const apiSlice = createApi({
         url: "/auth/resendOTP",
         method: "POST",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify(data),
+        body: data,
       }),
     }),
   }),

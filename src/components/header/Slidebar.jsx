@@ -38,6 +38,7 @@ const Slidebar = ({ setOpenSlidebar }) => {
   const { setOpenRegisterForm, setOpenLoginForm } = useAuthModalsContext();
   const { data: user } = useSession();
   const router = useRouter();
+  const userRole = user?.user?.role;
 
   // Log out handler
   const handleLogOut = async () => {
@@ -66,7 +67,7 @@ const Slidebar = ({ setOpenSlidebar }) => {
         >
           Home
         </Link>
-        {user && user?.user?.role === "admin" ? (
+        {user && userRole === "admin" ? (
           <>
             {adminRoutes.map((route) => (
               <Link
@@ -132,7 +133,7 @@ const Slidebar = ({ setOpenSlidebar }) => {
               setOpenRegisterForm(true);
             }}
           >
-            Resister
+            Register
           </Button>
         </div>
       )}

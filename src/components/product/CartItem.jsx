@@ -38,7 +38,7 @@ const CartItem = ({ product }) => {
 
         <Quantity />
       </div>
-    </li>
+    </li> 
   );
 };
 

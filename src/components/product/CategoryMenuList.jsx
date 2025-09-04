@@ -19,7 +19,7 @@ const CategoryMenuList = async () => {
           );
         }
       })}
-    </div>
+    </div> 
   );
 };
 

@@ -1,22 +1,37 @@
 "use client";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+
 import PriceRange from "@/components/filterItems/PriceRange";
 import PaginationBox from "@/components/product/PaginationBox";
 import ProductCard from "@/components/product/ProductCard";
 import { useFilteredProductsQuery } from "@/features/api/apiSlice";
-import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
 const SinglecategorySlug = ({ params }) => {
   const { slug: category } = params;
-  // Selected price range
-  const [priceRange, setPriceRange] = useState({});
-  // Page Number for Pagination
+
+  // Search Params
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") || 1);
-  // Get Price Range
-  const minPrice = searchParams.get("min Price");
-  const maxPrice = searchParams.get("max Price");
-  // RTK Query hook call
+  const min_price = searchParams.get("min_price");
+  const max_price = searchParams.get("max_price");
+
+  /// Price Range State
+  const [priceRange, setPriceRange] = useState({
+    value: "",
+    min: min_price ? parseInt(min_price, 10) : 0,
+    max: max_price ? parseInt(max_price, 10) : Infinity,
+  });
+
+  // Sync priceRange if query params change
+  useEffect(() => {
+    setPriceRange({
+      min: parseInt(min_price),
+      max: parseInt(max_price) || Infinity,
+    });
+  }, [min_price, max_price]);
+  min_price;
+  // API Query
   const {
     data: products,
     isError,
@@ -25,30 +40,40 @@ const SinglecategorySlug = ({ params }) => {
     error,
   } = useFilteredProductsQuery({
     category,
-    minPrice: priceRange.min,
-    maxPrice: priceRange.max,
+    min_price: priceRange.min,
+    max_price: priceRange.max,
   });
-
-  useEffect(() => {
-    setPriceRange({
-      min: parseInt(minPrice),
-      max: parseInt(maxPrice) || Infinity,
-    });
-  }, []);
 
   return (
     <div className="min-h-screen">
       {/* Categories Menu  */}
       <div className="flex flex-col md:flex-row">
-        {/* Price Range  */}
+        {/* Sidebar Filter */}
         <PriceRange category={category} setPriceRange={setPriceRange} />
 
         {/* Filtered Products  */}
-        <div className="w-full">
+        <div className="w-full relative">
+          {isLoading && (
+            <p className="text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              Loading products...
+            </p>
+          )}
+          {isError && (
+            <p className="text-center text-red-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              {error?.data?.message || "Failed to load products"}
+            </p>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:m-2 gap-2 justify-around ">
-            {products?.products?.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
+            {products?.products?.length > 0
+              ? products.products.map((product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))
+              : !isLoading && (
+                  <p className="text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    No products found
+                  </p>
+                )}
           </div>
 
           {/* Pagination box  */}

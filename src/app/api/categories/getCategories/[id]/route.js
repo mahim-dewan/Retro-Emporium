@@ -4,7 +4,7 @@ import connectDB from "@/lib/db";
 import Category from "@/models/category.model";
 
 export async function GET(req, { params }) {
-  const { id } = params;
+  const id  = params?.id;
 
   try {
     await connectDB();

@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useAuthModalsContext } from "@/context/authModalsContext";
 import { useRouter } from "next/navigation";
 import { useCreateUserMutation } from "@/features/api/apiSlice";
+import { Spinner } from "../ui/shadcn-io/spinner";
 
 const RegisterForm = ({ className, ...props }) => {
   const [newUser, setNewUser] = useState({
@@ -101,6 +102,7 @@ const RegisterForm = ({ className, ...props }) => {
           <IoClose
             onClick={() => setOpenRegisterForm(false)}
             className="text-retro text-3xl 2xl:text-5xl cursor-pointer font-bold absolute top-2 right-2 "
+            aria-label="Close registration modal"
           />
 
           <Card>
@@ -147,6 +149,7 @@ const RegisterForm = ({ className, ...props }) => {
                         />
                       </div>
                     </div>
+
                     <div className="grid gap-3">
                       <Label htmlFor="email">Email</Label>
                       <Input
@@ -159,6 +162,7 @@ const RegisterForm = ({ className, ...props }) => {
                         onChange={onChangeHandler}
                       />
                     </div>
+
                     <div className="grid gap-3">
                       <div className="flex items-center">
                         <Label htmlFor="password">Password</Label>
@@ -173,6 +177,7 @@ const RegisterForm = ({ className, ...props }) => {
                         onChange={onChangeHandler}
                       />
                     </div>
+
                     <div className="grid gap-3">
                       <div className="flex items-center">
                         <Label htmlFor="confirm-password">
@@ -189,14 +194,20 @@ const RegisterForm = ({ className, ...props }) => {
                         onChange={onChangeHandler}
                       />
                     </div>
+
                     <Button
                       disabled={isLoading}
                       type="submit"
-                      className={`w-full mx-auto mb-0 btn-fill text-white 2xl:text-2xl 2xl:py-6`}
+                      className={`w-full mx-auto mb-0 btn-fill bg-retro text-white 2xl:text-2xl 2xl:py-6`}
                     >
-                      {isLoading ? "Please Wait..." : "Register"}
+                      {isLoading ? (
+                        <Spinner className="text-dark" size={32} />
+                      ) : (
+                        "Register"
+                      )}
                     </Button>
                   </div>
+
                   <div className="text-center text-sm 2xl:text-xl">
                     Already have an account?{" "}
                     <Button

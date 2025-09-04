@@ -37,7 +37,7 @@ const ProductEditForm = () => {
 
   const { data: categories, isLoading } = useGetCategoriesQuery();
   const { data: subCategories } = useGetSubCategoriesQuery();
-  const [updateProduct] = useUpdateProductMutation();
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
 
   const [previewImages, setPreviewImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
@@ -72,20 +72,18 @@ const ProductEditForm = () => {
       setPreviewImages([]);
       setEditMode(false);
     } catch (err) {
-      return NextResponse.json({
-        message: err?.message || "Something went wrong",
-      });
+      toast.error(err?.message || "Something went wrong");
     }
   };
 
   // Cancel Update
   const handleCancleUpdate = () => {
     setEditMode(false);
-    setSelectedProduct([]);
+    setSelectedProduct(null);
   };
 
   useEffect(() => {
-    setPreviewImages(product?.images);
+    setPreviewImages(product?.images || []);
   }, [product]);
 
   if (!editMode) return null;
@@ -252,17 +250,21 @@ const ProductEditForm = () => {
 
           {/* Buttons */}
           <div className="flex gap-2 mt-6">
-            <Button variant="outline" className={"cursor-pointer"} onClick={handleCancleUpdate}>
+            <Button
+              variant="outline"
+              className={"cursor-pointer"}
+              onClick={handleCancleUpdate}
+            >
               Cancel
             </Button>
             <Button
               type="submit"
               className={`btn btn-fill m-0 ${
-                isLoading ? "bg-retro/50" : "bg-retro"
+                isUpdating ? "bg-retro/50" : "bg-retro"
               }`}
-              disabled={isLoading}
+              disabled={isUpdating}
             >
-              {isLoading ? "Updating..." : "Update"}
+              {isUpdating ? "Updating..." : "Update"}
             </Button>
           </div>
         </form>

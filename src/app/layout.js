@@ -1,16 +1,17 @@
+// app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header/Header";
-import LoginForm from "@/components/auth/LoginForm";
 import { ToastContainer } from "react-toastify";
-import RegisterForm from "@/components/auth/RegisterForm";
+
+import Header from "@/components/header/Header";
 import Footer from "@/components/rootPage/Footer";
 import BottomNav from "@/components/header/BottomNav";
+
 import ProviderWrapper from "./providers/ProviderWrapper";
 import AuthProvider from "./providers/authProvider";
 import AuthModalsProvider from "@/context/authModalsContext";
-import ProductEditForm from "@/components/admin/ProductEditForm";
 
+// Fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -21,6 +22,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Metadata for Next.js App Router
 export const metadata = {
   title: "Retro Emporium",
   description:
@@ -30,7 +32,7 @@ export const metadata = {
   },
 };
 
-export default async function RootLayout({ children }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
@@ -39,29 +41,19 @@ export default async function RootLayout({ children }) {
         <ProviderWrapper>
           <AuthProvider>
             <AuthModalsProvider>
-                {/* Login Form  */}
-                <LoginForm
-                  className={
-                    "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                  }
-                />
-                {/* Register Form  */}
-                <RegisterForm
-                  className={
-                    "absolute top-1/2 md:top-2/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                  }
-                />
-                <Header />
-                <main className="max-w-[1500px] mx-auto shadow-xl">
-                  {children}
+              <Header />
 
-                  <ToastContainer autoClose={2000} position="top-right" />
-                </main>
-              {/* Bottom Navbar  */}
+              <main className="mx-auto max-w-screen-2xl shadow-xl">
+                {children}
+                <ToastContainer autoClose={2000} position="top-right" />
+              </main>
+
+              <Footer />
+
+              {/* Mobile Only Bottom Nav */}
               <div className="fixed bottom-0 w-full md:hidden">
                 <BottomNav />
               </div>
-              <Footer />
             </AuthModalsProvider>
           </AuthProvider>
         </ProviderWrapper>

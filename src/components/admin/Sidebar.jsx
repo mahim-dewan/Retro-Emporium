@@ -14,7 +14,7 @@ import {
 import { LuClipboardList } from "react-icons/lu";
 import { TbTruckDelivery } from "react-icons/tb";
 import { MdOutlineCategory } from "react-icons/md";
-import {  PiUsersBold } from "react-icons/pi";
+import { PiUsersBold } from "react-icons/pi";
 import { IoHomeOutline } from "react-icons/io5";
 
 // menu items
@@ -24,7 +24,7 @@ const menuList = [
     icon: <IoHomeOutline className="text-2xl text-dark" />,
     url: "/",
   },
-  
+
   {
     name: "Orders",
     icon: <TbTruckDelivery className="text-2xl text-dark" />,

@@ -14,7 +14,7 @@ const ProductTabDescription = ({description}) => {
         {/* Description Content  */}
         <TabsContent value="description">
           <p className="text-sm leading-relaxed text-muted-foreground">
-            {description}
+            {description || "No description available."}
           </p>
         </TabsContent>
         {/* Reviews Content  */}
