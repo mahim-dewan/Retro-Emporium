@@ -20,11 +20,12 @@ const apiSlice = createApi({
     }),
 
     filteredProducts: builder.query({
-      query: ({ category, min_price, max_price }) => {
+      query: ({ category_id, min_price, max_price, page }) => {
         const params = new URLSearchParams();
-        if (category) params.append("category", category);
+        if (category_id) params.append("category_id", category_id);
         if (min_price) params.append("min_price", min_price);
         if (max_price) params.append("max_price", max_price);
+        if (page) params.append("page", page);
         return `/products?${params.toString()}`;
       },
     }),
@@ -65,7 +66,13 @@ const apiSlice = createApi({
 
     // *********************** Category ********************
     getCategories: builder.query({
-      query: () => "/categories/getCategories",
+      query: (category) => {
+        if (category) {
+          return `/categories/getCategories?name=${category}`;
+        } else {
+          return `/categories/getCategories`;
+        }
+      },
     }),
     getCategory: builder.query({
       query: (id) => `/categories/getCategories/${id}`,

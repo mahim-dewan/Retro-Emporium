@@ -1,4 +1,5 @@
 import connectDB from "@/lib/db";
+import Category from "@/models/category.model";
 import Product from "@/models/product.model";
 import { NextResponse } from "next/server";
 
@@ -9,15 +10,30 @@ export async function GET(req) {
 
     // Filtering variables
     let filter = {};
-    const category = searchParams.get("category");
-    const minPrice = parseInt(searchParams.get("minPrice"));
-    const maxPrice = searchParams.get("maxPrice");
-    const maxPriceConvert =
-      maxPrice === "Infinity" ? Infinity : parseInt(maxPrice);
+    const category_id = searchParams.get("category_id");
+    const min_price = Number(searchParams.get("min_price"));
+    const max_price = Number(searchParams.get("max_price"));
+    const max_priceConvert =
+      max_price === "Infinity" ? Infinity : Number(max_price);
 
-    if (category) filter.category = category;
-    if (!isNaN(minPrice) && !isNaN(maxPrice)) {
-      filter.price = { $gte: minPrice, $lte: maxPriceConvert };
+    // ✅ Only check category if category_id is given
+    if (category_id) {
+      const category = await Category.findById(category_id);
+      if (!category) {
+        return NextResponse.json(
+          { message: "Invalid category" },
+          { status: 404 }
+        );
+      }
+      filter.category_id = category_id;
+    }
+
+    if (
+      !isNaN(min_price) &&
+      !isNaN(max_price) &&
+      (min_price || max_price > 0)
+    ) {
+      filter.discountPrice = { $gte: min_price, $lte: max_priceConvert };
     }
 
     // Pagination
@@ -99,7 +115,6 @@ export async function DELETE(req) {
   try {
     const id = await req.json();
     const result = await Product.findByIdAndDelete(id);
-    console.log(result);
 
     return NextResponse.json({ message: "Product Deleted" });
   } catch (err) {

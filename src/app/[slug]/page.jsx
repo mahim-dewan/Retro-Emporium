@@ -5,7 +5,11 @@ import { useSearchParams } from "next/navigation";
 import PriceRange from "@/components/filterItems/PriceRange";
 import PaginationBox from "@/components/product/PaginationBox";
 import ProductCard from "@/components/product/ProductCard";
-import { useFilteredProductsQuery } from "@/features/api/apiSlice";
+import {
+  useFilteredProductsQuery,
+  useGetCategoriesQuery,
+  useGetCategoryQuery,
+} from "@/features/api/apiSlice";
 
 const SinglecategorySlug = ({ params }) => {
   const { slug: category } = params;
@@ -30,8 +34,9 @@ const SinglecategorySlug = ({ params }) => {
       max: parseInt(max_price) || Infinity,
     });
   }, [min_price, max_price]);
-  min_price;
+
   // API Query
+  const { data: categoryData } = useGetCategoriesQuery(category);
   const {
     data: products,
     isError,
@@ -39,9 +44,10 @@ const SinglecategorySlug = ({ params }) => {
     isSuccess,
     error,
   } = useFilteredProductsQuery({
-    category,
-    min_price: priceRange.min,
-    max_price: priceRange.max,
+    category_id: categoryData?._id,
+    min_price,
+    max_price,
+    page,
   });
 
   return (
@@ -69,7 +75,8 @@ const SinglecategorySlug = ({ params }) => {
               ? products.products.map((product) => (
                   <ProductCard key={product._id} product={product} />
                 ))
-              : !isLoading && (
+              : !isLoading &&
+                isSuccess && (
                   <p className="text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                     No products found
                   </p>

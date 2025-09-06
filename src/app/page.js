@@ -10,9 +10,9 @@ export default function Home() {
   return (
     <div>
       {/* Category menu  */}
-      <div className="hidden md:block">
+      {/* <div className="hidden md:block">
         <CategoryMenuList />
-      </div>
+      </div> */}
 
       {/* Hero area  */}
       <HeroSection />

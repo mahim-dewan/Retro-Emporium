@@ -5,7 +5,7 @@ import PaginationBox from "./PaginationBox";
 
 const AllProducts = async ({ searchParams }) => {
   const page = parseInt(searchParams?.page) || 1; // Get page for pagination
-  const { products, totalPages } = await allProducts({ page }); // Get Products by pagination
+  const { products, totalPages } = await allProducts({ page }); // Get Products by pagination  
 
   return (
     <div className="w-full">
