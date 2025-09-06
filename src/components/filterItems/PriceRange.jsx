@@ -25,10 +25,10 @@ import { FaPlus } from "react-icons/fa";
 import Button from "../utils/Button";
 
 const priceRanges = [
-  { value: "under 50$", min: 0, max: 50 },
-  { value: "50$-100$", min: 50, max: 100 },
-  { value: "100$-200$", min: 100, max: 200 },
-  { value: "over 200$", min: 200, max: Infinity },
+  { value: "under 500TK", min: 0, max: 500 },
+  { value: "501TK-1000TK", min: 501, max: 1000 },
+  { value: "1001TK-2000TK", min: 1001, max: 2000 },
+  { value: "over 2000TK", min: 2001, max: Infinity },
 ];
 
 const PriceRange = ({ category, setPriceRange }) => {
@@ -49,7 +49,6 @@ const PriceRange = ({ category, setPriceRange }) => {
     <div className="w-full md:w-2/6">
       {/* Price Range for Mobile  */}
       <div className="shadow-sm shadow-dark rounded-md md:hidden m-5 p-2">
-        <div></div>
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
             {isOpen ? (
@@ -89,7 +88,7 @@ const PriceRange = ({ category, setPriceRange }) => {
               {priceRanges?.map((range) => (
                 <Link
                   key={range.value}
-                  href={`/${category}?minPrice=${range?.min}&maxPrice=${range?.max}`}
+                  href={`/${category}?min_price=${range?.min}&max_price=${range?.max}`}
                   onClick={() => {
                     setSelected(range);
                     setPriceRange(range);
@@ -140,7 +139,7 @@ const PriceRange = ({ category, setPriceRange }) => {
             {priceRanges.map((range) => (
               <Link
                 key={range.value}
-                href={`/${category}?minPrice=${range?.min}&maxPrice=${range?.max}`}
+                href={`/${category}?min_price=${range?.min}&max_price=${range?.max}`}
                 onClick={() => {
                   setSelected(range);
                   setPriceRange(range);

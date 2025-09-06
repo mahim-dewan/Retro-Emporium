@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { useGetCategoriesQuery } from "@/features/api/apiSlice";
 
@@ -9,7 +9,6 @@ const ProductNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [arrow, setArrow] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const { data: subCategories } = useGetCategoriesQuery();
 
   return (
@@ -35,7 +34,7 @@ const ProductNav = () => {
         </Link>
         {isOpen && (
           <div className="absolute top-0 right-0 w-[600px] max-h-96 overflow-y-auto  box-shadow z-40 bg-white flex flex-wrap gap-0  ">
-            {subCategories?.length === 0 ? (
+            {!subCategories || subCategories?.length === 0 ? (
               <p className="p-2">No subcategories available.</p>
             ) : (
               subCategories?.map((subCategory) => (
