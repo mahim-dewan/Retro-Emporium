@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import logo from "../../../public/Retro-logo.png";
 import Link from "next/link";
 import { TiThMenu } from "react-icons/ti";
@@ -12,10 +12,33 @@ import { GiShoppingCart } from "react-icons/gi";
 import CategorySlidebar from "./CategorySlidebar";
 import { CiSquarePlus } from "react-icons/ci";
 import { useSession } from "next-auth/react";
+import { countCartItems } from "@/utils/cart";
 
 const Header = () => {
   const [openSlidebar, setOpenSlidebar] = useState(false);
   const { data: user } = useSession();
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const updateCart = () => {
+      const items = JSON.parse(localStorage.getItem("retro-cart")) || [];
+      setCartItems(items);
+    };
+
+    // First load
+    updateCart();
+
+    // Listen for cart update event
+    window.addEventListener("retroCartUpdated", updateCart);
+
+    // Cleanup listener on unmount
+    return () => window.removeEventListener("retroCartUpdated", updateCart);
+  }, []);
+
+  // Calculate total quantity with useMemo for efficiency
+  const totalQuantity = useMemo(() => countCartItems(cartItems), [cartItems]);
 
   return (
     <header className="sticky md:top-0 -top-16 z-40 border-b  bg-white border-gray-300 min-w-full">
@@ -52,8 +75,8 @@ const Header = () => {
           {/* Shopping Cart  */}
           <Link href={"/cart"} className="relative mx-4">
             <GiShoppingCart className="text-3xl text-retro cursor-pointer m-2" />
-            <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums bg-pastel-olive text-retro absolute bottom-7 right-0">
-              8
+            <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums bg-pastel-olive text-dark absolute bottom-7 right-0">
+              {totalQuantity}
             </Badge>
           </Link>
 
@@ -76,7 +99,7 @@ const Header = () => {
       <div
         className={`min-h-full md:hidden z-50 bg-white border-l border-retro fixed top-0 w-1/2 right-0 transition-all duration-300 ease-in-out ${
           !openSlidebar ? "translate-x-96" : "translate-x-0"
-        } `} 
+        } `}
       >
         <Slidebar setOpenSlidebar={setOpenSlidebar} />
       </div>

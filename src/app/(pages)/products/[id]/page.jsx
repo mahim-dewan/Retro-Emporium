@@ -20,15 +20,20 @@ import DeliverySlide from "@/components/product/DeliverySlide";
 import ProductTabDescription from "@/components/product/ProductTabDescription";
 import RelatedProducts from "@/components/product/RelatedProducts";
 
+import { handleAddToCart } from "@/utils/cart";
+
 // API
 import {
   useGetCategoryQuery,
   useGetProductByIDQuery,
 } from "@/features/api/apiSlice";
+import { useRouter } from "next/navigation";
+import { calculateDiscountPersent } from "@/utils/productUtils";
 
 const ProductDetails = ({ params }) => {
   const { id } = params;
   const [activeImage, setActiveImage] = useState(null);
+  const router = useRouter();
 
   const paymentImages = [Bkash, Nagad, Mastercard, Visa];
 
@@ -54,7 +59,8 @@ const ProductDetails = ({ params }) => {
   }, [isSuccess, product]);
 
   // Handle loading state
-  if (isLoading) return <p className="text-center py-10 min-h-screen">Loading product...</p>;
+  if (isLoading)
+    return <p className="text-center py-10 min-h-screen">Loading product...</p>;
   if (isError)
     return (
       <p className="text-center py-10 text-red-600 min-h-screen">
@@ -63,14 +69,7 @@ const ProductDetails = ({ params }) => {
     );
 
   // Price & discount calculation
-  const discountPercent =
-    product?.regularPrice && product?.discountPrice
-      ? Math.round(
-          ((product.regularPrice - product.discountPrice) /
-            product.regularPrice) *
-            100
-        )
-      : 0;
+  const discountPercent = calculateDiscountPersent(product);
 
   return (
     <div className="min-h-screen">
@@ -141,9 +140,9 @@ const ProductDetails = ({ params }) => {
             </div>
 
             {/* Quantity + Actions */}
-            <div className="flex justify-center items-start gap-2">
-              <Quantity />
-              <div className=" box-shadow flex flex-col items-center flex-2 md:m-0">
+            <div className="flex flex-col justify-center items-center gap-2">
+              <Quantity className={"flex-1"} product={product} />
+              <div className=" box-shadow flex w-full items-center flex-2 gap-2 m-0">
                 <Button
                   className={
                     "btn-fill px-3 py-2 m-0 w-full my-1 text-white flex items-center justify-center gap-1"
@@ -153,11 +152,15 @@ const ProductDetails = ({ params }) => {
                   Order Now
                 </Button>
                 <Button
+                  handler={() => {
+                    handleAddToCart(product);
+                    router.refresh();
+                  }}
                   className={
                     "btn-fill px-3 py-2 m-0 w-full my-1 text-white flex items-center justify-center"
                   }
                 >
-                  <GiShoppingCart className="text-3xl" />
+                  <GiShoppingCart className="text-2xl" />
                   Add to Cart
                 </Button>
               </div>

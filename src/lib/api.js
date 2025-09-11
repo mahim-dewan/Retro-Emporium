@@ -10,9 +10,7 @@ export const getJustForYouProducts = async () => {
 export const allProducts = async ({page}) => {
   const url = `${process.env.BASE_API}/products?page=${page}`;
   const res = await fetch(url, { cache: "no-store" });
-  const products = await res.json();
-  console.log(products);
-  
+  const products = await res.json();  
   return products;
 }; 
 

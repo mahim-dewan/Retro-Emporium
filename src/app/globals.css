@@ -25,6 +25,7 @@ html body[data-scroll-locked] {
   --color-dark:#2C2F3B;
 }
 
+
 @layer components{
   .btn-fill{
     @apply py-2 px-5 rounded-md bg-retro text-white hover:bg-amber-700 border-retro border  font-semibold my-5 mx-2 cursor-pointer;

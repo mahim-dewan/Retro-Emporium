@@ -20,7 +20,7 @@ const CategoryFeature = async () => {
           <Link
             href={`/${encodeURIComponent(category?.name)}`}
             key={category._id}
-            className="w-26 md:w-32 min-h-fit border border-retro hover:text-white hover:bg-retro active:bg-retro flex flex-col items-center justify-center rounded-lg text-center break-words"
+            className="w-26 md:w-32 min-h-fit border border-retro hover:text-white hover:bg-retro active:bg-retro flex flex-col items-center justify-center rounded-lg rounded-tl-3xl rounded-br-3xl text-center break-words"
           >
             <Image
               src={category?.image}

@@ -51,9 +51,9 @@ const SinglecategorySlug = ({ params }) => {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-2">
       {/* Categories Menu  */}
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row gap-2">
         {/* Sidebar Filter */}
         <PriceRange category={category} setPriceRange={setPriceRange} />
 
