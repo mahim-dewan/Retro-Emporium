@@ -73,7 +73,7 @@ const Header = () => {
           )}
 
           {/* Shopping Cart  */}
-          <Link href={"/cart"} className="relative mx-4">
+          <Link href={"/store/cart"} className="relative mx-4">
             <GiShoppingCart className="text-3xl text-retro cursor-pointer m-2" />
             <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums bg-pastel-olive text-dark absolute bottom-7 right-0">
               {totalQuantity}

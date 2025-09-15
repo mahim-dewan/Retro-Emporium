@@ -1,15 +1,20 @@
 "use client";
+
 import React, { useEffect, useMemo, useState } from "react";
 import { CiLocationOn } from "react-icons/ci";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 import CartItem from "@/components/product/CartItem";
 import { Input } from "@/components/ui/input";
 import Button from "@/components/utils/Button";
 import { countCartItems } from "@/utils/cart";
 
+const STORAGE_KEY = "retro-cart";
+
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const router = useRouter();
 
   // Get only checked/selected items
   const checkedItems = useMemo(
@@ -27,6 +32,9 @@ const Cart = () => {
     [checkedItems]
   );
 
+  const shippingFee = 0;
+  const total = subtotal + shippingFee;
+
   // Remove item from cart
   const handleRemoveCart = (product) => {
     const filteredItems = cartItems?.filter((item) => item._id !== product._id);
@@ -37,26 +45,48 @@ const Cart = () => {
     toast.warn("Removed a cart item");
   };
 
-  const shippingFee = 0;
-  const total = subtotal + shippingFee;
+  /** Checkout handler */
+  const handleCheckout = () => {
+    if (checkedItems.length > 0) {
+      sessionStorage.setItem(
+        "checkoutItems",
+        JSON.stringify({
+          products: checkedItems,
+          totalAmount: total,
+          deliveyCharge: shippingFee,
+        })
+      );
+      router.push("/store/checkout");
+    } else {
+      alert("Please select the product");
+    }
+  };
 
   // Load cart from localStorage and listen to updates
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updatedCart = () => {
-        const items = JSON.parse(localStorage.getItem("retro-cart") || []);
-        setCartItems(items.reverse());
-      };
-      updatedCart();
+    if (typeof window === "undefined") return;
 
-      window.addEventListener("retroCartUpdated", updatedCart);
+    const loadCart = () => {
+      const items = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      setCartItems(items.reverse());
+    };
+    loadCart();
 
-      // Cleanup listener on unmount
-      return () => window.removeEventListener("retroCartUpdated", updatedCart);
-    }
+    window.addEventListener("retroCartUpdated", loadCart);
+
+    // Cleanup listener on unmount
+    return () => window.removeEventListener("retroCartUpdated", loadCart);
   }, []);
 
-  return cartItems?.length > 0 ? (
+  if (cartItems.length === 0) {
+    return (
+      <p className="min-h-96 text-2xl flex justify-center items-center">
+        No cart items added
+      </p>
+    );
+  }
+
+  return (
     <div className="min-h-screen p-4 flex flex-col lg:flex-row gap-2">
       <ul className="w-full lg:w-3/4">
         <li className="bg-pastel-olive p-4 hidden md:grid grid-cols-4 justify-around text-md font-bold my-5 rounded-lg">
@@ -117,16 +147,15 @@ const Cart = () => {
             <Button className={"btn-fill"}>Apply</Button>
           </div>
 
-          <Button className={"mx-auto w-full btn-fill text-lg"}>
+          <Button
+            className={"mx-auto w-full btn-fill text-lg"}
+            handler={handleCheckout}
+          >
             PROCEED TO CHECKOUT ({countCartItems(checkedItems)})
           </Button>
         </div>
       </div>
     </div>
-  ) : (
-    <p className="min-h-96 text-2xl flex justify-center items-center">
-      No cart items added
-    </p>
   );
 };
 

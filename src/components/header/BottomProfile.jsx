@@ -15,7 +15,7 @@ const BottomProfile = ({ user }) => {
           Profile
         </ProfileDropDown>
       ) : (
-        <div onClick={() => setOpenLoginForm(true)}>
+        <div onClick={() => setOpenLoginForm(true)} className="flex flex-col items-center text-sm">
           <PiUserListFill size={26} />
           Profile
         </div>
