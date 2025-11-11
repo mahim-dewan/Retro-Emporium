@@ -16,43 +16,80 @@ import gmail from "../../../public/gmail.png";
 import facebook from "../../../public/facebook.png";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { useAppContext } from "@/context/AppContext";
+import { useAuthModalsContext } from "@/context/authModalsContext";
+import { useResendOTPMutation } from "@/features/api/apiSlice";
 
 export default function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  // Form open and close mode context
   const {
     openLoginForm,
     setOpenLoginForm,
     openRegisterForm,
     setOpenRegisterForm,
-  } = useAppContext();
+  } = useAuthModalsContext();
+  const [resendOTP] = useResendOTPMutation();
 
-  const loginHandler = async () => {
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-    console.log(result);
-    if (result.error) return toast.error(result.error);
-    setEmail("");
-    setPassword("");
-    toast.success("Login successful", {
-      onClose: () => router.push("/"),
-    });
-    setOpenLoginForm(false);
+  // Login handler
+  const loginHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (!result.ok) {
+        // check user email is verified
+        if (result.error === "Please Verify your email.") {
+          return toast.error(() => (
+            <span className="flex">
+              {result.error}
+              <button
+                className="text-blue-600 underline cursor-pointer"
+                onClick={() => {
+                  sessionStorage.setItem("registerEmail", email);
+                  router.push("/verify");
+                  setOpenLoginForm(false);
+                  resendOTP(email);
+                }}
+              >
+                Verify
+              </button>
+            </span>
+          ));
+        }
+        toast.error(result?.error);
+        return;
+      }
+
+      setEmail("");
+      setPassword("");
+
+      // Login form close and redirect to home
+      setOpenLoginForm(false);
+      toast.success("Login successful", {
+        onClose: () => {
+          router.refresh();
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      alert(err?.message || "Something went wrong. Please try again.");
+    }
   };
 
+  // if login form stay close
   if (!openLoginForm) return null;
 
   // JSX Start
   return (
-    <div className="w-full h-screen bg-white/50 absolute top-0 z-50">
+    <div className="w-full h-screen bg-white/50 backdrop-blur-xs fixed top-0 z-50">
       <div
         className={cn(
           "flex flex-col gap-2 w-[350px] 2xl:w-[600px] mx-auto my-5 bg-pastel-olive rounded-xl relative",
@@ -64,6 +101,7 @@ export default function LoginForm({ className, ...props }) {
         <IoClose
           onClick={() => setOpenLoginForm(false)}
           className="text-retro text-3xl cursor-pointer font-bold absolute top-2 right-2 "
+          aria-label="Close login modal"
         />
 
         {/* Overlay background */}
@@ -77,7 +115,7 @@ export default function LoginForm({ className, ...props }) {
           </CardHeader>
           <CardContent>
             <div>
-              <div className="grid ">
+              <form onSubmit={loginHandler} className="grid ">
                 {/* Continue with Google & Facebook  */}
                 <div className="grid md:grid-cols-2 gap-2">
                   <Button variant="outline" className="w-full 2xl:py-6">
@@ -142,7 +180,6 @@ export default function LoginForm({ className, ...props }) {
                   <Button
                     type="submit"
                     className="w-full mx-auto btn-fill text-white 2xl:text-2xl 2xl:py-6"
-                    onClick={loginHandler}
                   >
                     Login
                   </Button>
@@ -161,7 +198,7 @@ export default function LoginForm({ className, ...props }) {
                     Register
                   </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </CardContent>
 
@@ -172,7 +209,6 @@ export default function LoginForm({ className, ...props }) {
           </div>
         </Card>
       </div>
-      {/* <ToastContainer autoClose={2000} /> */}
     </div>
   );
 }

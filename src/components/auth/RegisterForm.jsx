@@ -14,8 +14,11 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import logo from "../../../public/Retro-logo.png";
 import { IoClose } from "react-icons/io5";
-import { toast, ToastContainer } from "react-toastify";
-import { useAppContext } from "@/context/AppContext";
+import { toast } from "react-toastify";
+import { useAuthModalsContext } from "@/context/authModalsContext";
+import { useRouter } from "next/navigation";
+import { useCreateUserMutation } from "@/features/api/apiSlice";
+import { Spinner } from "../ui/shadcn-io/spinner";
 
 const RegisterForm = ({ className, ...props }) => {
   const [newUser, setNewUser] = useState({
@@ -25,12 +28,18 @@ const RegisterForm = ({ className, ...props }) => {
     password: "",
     confirmPass: "",
   });
+  // Form Open and Close mode
   const {
     openRegisterForm,
     setOpenRegisterForm,
     openLoginForm,
     setOpenLoginForm,
-  } = useAppContext();
+  } = useAuthModalsContext();
+  // Next Router for redirect
+  const router = useRouter();
+  // RTK Query hook call
+  const [createUser, { data, isError, error, isLoading, isSuccess }] =
+    useCreateUserMutation();
 
   // onChange handler
   const onChangeHandler = (e) => {
@@ -42,25 +51,21 @@ const RegisterForm = ({ className, ...props }) => {
 
   // submit handler
   const submitHandler = async (e) => {
-    console.log(newUser);
     e.preventDefault();
 
     try {
+      // Is matched password and confirm password field
       if (newUser.password !== newUser.confirmPass)
         return toast.warning("Password doesn't matched");
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API}api/auth/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...newUser }),
-        }
-      );
-      const data = await res.json();
-      console.log(data);
-      if (!res.ok) return toast.error(data?.message);
+
+      const res = await createUser({ ...newUser });
+
+      if (res.error) {
+        return toast.error(res.error?.data?.message || "Registration failed");
+      }
+
+      // set email for verify page
+      sessionStorage.setItem("registerEmail", res.data.data.email);
 
       setNewUser({
         firstname: "",
@@ -70,21 +75,21 @@ const RegisterForm = ({ className, ...props }) => {
         confirmPass: "",
       });
 
-      // redirect to login page
-      toast.success(data?.message);
+      // redirect to verify page
+      toast.success(res.data.message || "Registration Successfull");
       setOpenRegisterForm(false);
-      setOpenLoginForm(true);
+      router.push("/verify");
     } catch (err) {
-      toast(err?.message);
-      console.log(err?.message);
+      toast.error(err?.message);
     }
   };
 
+  // if registration form stay close
   if (!openRegisterForm) return null;
 
   // JSX Start
   return (
-    <div className="w-full h-[110%] bg-white/50 absolute top-0 z-50">
+    <div className="w-full h-[110%] bg-white/50 fixed -top-10 z-50">
       <div className="py-5">
         <div
           className={cn(
@@ -97,6 +102,7 @@ const RegisterForm = ({ className, ...props }) => {
           <IoClose
             onClick={() => setOpenRegisterForm(false)}
             className="text-retro text-3xl 2xl:text-5xl cursor-pointer font-bold absolute top-2 right-2 "
+            aria-label="Close registration modal"
           />
 
           <Card>
@@ -143,6 +149,7 @@ const RegisterForm = ({ className, ...props }) => {
                         />
                       </div>
                     </div>
+
                     <div className="grid gap-3">
                       <Label htmlFor="email">Email</Label>
                       <Input
@@ -155,6 +162,7 @@ const RegisterForm = ({ className, ...props }) => {
                         onChange={onChangeHandler}
                       />
                     </div>
+
                     <div className="grid gap-3">
                       <div className="flex items-center">
                         <Label htmlFor="password">Password</Label>
@@ -169,6 +177,7 @@ const RegisterForm = ({ className, ...props }) => {
                         onChange={onChangeHandler}
                       />
                     </div>
+
                     <div className="grid gap-3">
                       <div className="flex items-center">
                         <Label htmlFor="confirm-password">
@@ -185,13 +194,20 @@ const RegisterForm = ({ className, ...props }) => {
                         onChange={onChangeHandler}
                       />
                     </div>
+
                     <Button
+                      disabled={isLoading}
                       type="submit"
-                      className="w-full mx-auto mb-0 btn-fill text-white 2xl:text-2xl 2xl:py-6"
+                      className={`w-full mx-auto mb-0 btn-fill bg-retro text-white 2xl:text-2xl 2xl:py-6`}
                     >
-                      Resister
+                      {isLoading ? (
+                        <Spinner className="text-dark" size={32} />
+                      ) : (
+                        "Register"
+                      )}
                     </Button>
                   </div>
+
                   <div className="text-center text-sm 2xl:text-xl">
                     Already have an account?{" "}
                     <Button
@@ -215,7 +231,6 @@ const RegisterForm = ({ className, ...props }) => {
               <a href="#">Privacy Policy</a>.
             </div>
           </Card>
-          {/* <ToastContainer autoClose={2000} /> */}
         </div>
       </div>
     </div>

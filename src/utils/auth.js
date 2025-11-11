@@ -8,16 +8,22 @@ export const authOptions = {
     CredentialsProvider({
       async authorize(credentials, req) {
         const { email, password } = credentials;
+        // Database connect
         await connectDB();
-        console.log("DB connected");
 
+        // Find user exists
         const user = await User.findOne({ email });
         if (!user) throw new Error("User doesn't exists");
 
+        // Match password
         const matchPassword = await bcrypt.compare(password, user.password);
         if (!matchPassword) {
           throw new Error("Invalid Credentials");
         }
+
+        // Check verification
+        if (!user.isVerified) throw new Error("Please Verify your email.");
+
         const { _id, firstname, lastname, role, isVerified } = user;
 
         return {
@@ -35,17 +41,14 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      console.log(user, "user");
       if (user) {
         token.user = user;
       }
-      console.log("jwt", token);
 
       return token;
     },
     async session({ session, token }) {
       session.user = token.user;
-      console.log(session, "session");
 
       return session;
     },

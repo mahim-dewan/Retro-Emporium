@@ -1,16 +1,18 @@
-"use client";
-import { useAppContext } from "@/context/AppContext";
-import { useSession } from "next-auth/react";
+import PriceRange from "@/components/filterItems/PriceRange";
+import AllProducts from "@/components/product/AllProducts";
 import React from "react";
 
-const Products = () => {
-  const { data: session } = useSession();
-  console.log(session?.user);
-
-  const { openForm } = useAppContext();
-  console.log(openForm);
-
-  return <div>{session?.user?.name}</div>;
+const Products = ({ searchParams }) => {
+  return (
+    <div className=" min-h-screen">
+      <div className="flex flex-col md:flex-row">
+        {/* Price Range  */}
+        <PriceRange />
+        
+        <AllProducts searchParams={searchParams} />
+      </div>
+    </div>
+  );
 };
 
 export default Products;
